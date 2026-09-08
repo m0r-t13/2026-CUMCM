@@ -1,0 +1,16 @@
+# Local system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local credentials
+.env
+.env.*
+!.env.example

@@ -1,0 +1,329 @@
+% 参考这里：https://cumcm.cnki.net/cumcm/studentHome/noticeDetail?id=c0c5220f-0226-4cd8-bce1-e1f81e1e23f6
+
+%\documentclass{cumcmthesis}
+
+\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页，电子版提交的时候使用。
+
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usepackage{cumcm2026}
+
+\newtcolorbox{framee}[1][]{
+  enhanced,
+  skin=enhancedlast jigsaw,
+  attach boxed title to top left={xshift=-4mm,yshift=-0.5mm},
+  fonttitle=\bfseries\sffamily,
+  colbacktitle=blue!45,
+  colframe=red!50!black,
+  interior style={
+    top color=blue!10,
+    bottom color=red!10
+  },
+  boxed title style={
+    empty,
+    arc=0pt,
+    outer arc=0pt,
+    boxrule=0pt
+  },
+  underlay boxed title={
+    \fill[blue!45!white]
+      (title.north west) --
+      (title.north east) --
+      +(\tcboxedtitleheight-1mm,-\tcboxedtitleheight+1mm) --
+      ([xshift=4mm,yshift=0.5mm]frame.north east) --
+      +(0mm,-1mm) --
+      (title.south west) -- cycle;
+    \fill[blue!45!white!50!black]
+      ([yshift=-0.5mm]frame.north west) --
+      +(-0.4,0) --
+      +(0,-0.3) -- cycle;
+    \fill[blue!45!white!50!black]
+      ([yshift=-0.5mm]frame.north east) --
+      +(0,-0.3) --
+      +(0.4,0) -- cycle;
+  },
+  title={2026 年建模比赛格式变化说明},
+  #1
+}
+
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{url}   % 网页链接
+\usepackage{subcaption} % 子标题
+\definecolor{tablelavender}{RGB}{218,218,250}
+\title{基于混合效应模型的NIPT时点优化与胎儿异常判定}
+
+%%=======如下信息已经不再需要填写========
+\tihao{A}
+\baominghao{4321}
+\schoolname{XX大学}
+\membera{ }
+\memberb{ }
+\memberc{ }
+\supervisor{ }%辅导老师
+\yearinput{2026}
+\monthinput{9}
+\dayinput{1}
+%===================================
+
+\begin{document}
+
+ \maketitle
+ \begin{abstract}
+
+
+\keywords{无创产前检测\quad  混合效应模型\quad   优化模型\quad  Z值判定\quad 染色体异常筛查}
+\end{abstract}
+
+%\tableofcontents
+
+%\newpage
+
+\section{问题重述}
+
+\subsection{问题背景}
+
+
+
+\subsection{问题要求}
+
+本研究需结合所提供的临床数据，建立数学模型以系统研究以下四个问题：
+
+\section{问题分析}
+
+\section{模型假设}
+
+为简化问题，本文做出以下假设：
+
+\begin{enumerate}[leftmargin=1.6cm]
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+\newpage
+
+\section{符号说明}
+
+\begin{table}[htbp]
+  \centering
+
+  \renewcommand{\arraystretch}{1.35}
+  \setlength{\tabcolsep}{8pt}
+
+  \rowcolors{2}{white}{tablelavender}
+
+  \begin{tabularx}{\textwidth}{
+    >{\centering\arraybackslash}p{0.25\textwidth}
+    >{\raggedright\arraybackslash}X
+    >{\centering\arraybackslash}p{0.20\textwidth}
+  }
+    \toprule
+    \rowcolor{tablelavender}
+    符号 & 说明 & 单位 \\
+    \midrule
+
+    $FF$                    & 胎儿 Y 染色体浓度       & --          \\
+    $GA$                    & 孕周                    & 周          \\
+    $BMI$                   & 身体质量指数            & $\mathrm{kg/m^2}$ \\
+    $y$                     & $\operatorname{logit}(FF)$ & --       \\
+    $\beta_0,\beta_1,\ldots$ & 固定效应系数           & --          \\
+    $u_i,b_i$               & 随机效应                & --          \\
+    $\sigma^2$              & 方差                    & --          \\
+    $p(t,b)$                & 达标概率                & --          \\
+    $\theta$                & 浓度阈值（0.04）         & --          \\
+    $T_{\ast}(b)$           & 最早达标时间            & 周          \\
+    $\kappa$                & 误差放缩因子            & --          \\
+    $r_{\mathrm{fail}}$     & 检测失败风险            & --          \\
+    $\phi(t)$               & 临床时间风险            & --          \\
+    $Z$                     & $Z$ 值                  & --          \\
+    $q$                     & FDR 校正后的 $q$ 值     & --          \\
+
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{数据预处理}
+
+\section{模型的建立与求解}
+
+\subsection{问题一模型的建立与求解}
+
+\subsubsection{aaa}
+
+
+\subsection{问题二模型的建立与求解}
+
+\subsubsection{bbb}
+
+\subsection{问题三模型的建立与求解}
+
+\subsubsection{ccc}
+
+\subsection{问题四模型的建立与求解}
+
+\subsubsection{ddd}
+
+\section{模型的评价与推广}
+
+\subsection{模型的优点}
+
+\begin{enumerate}[leftmargin=1.6cm]
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+\subsection{模型的不足}
+
+\begin{enumerate}[leftmargin=1.6cm]
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+\subsection{模型的推广与应用}
+
+\begin{enumerate}[leftmargin=1.6cm]
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+\CumcmAIUsed{[简要用途, 如语言润色, 代码调试等]}
+
+
+\section*{AI工具使用详情}
+
+\subsection*{工具信息}
+\noindent
+\begin{tabularx}{\textwidth}{@{}XX@{}}
+  \toprule
+  项目 & 填写内容 \\
+  \midrule
+  工具名称 & \textit{填写实际使用的产品或工具名称} \\
+  版本或型号 & \textit{填写实际版本、模型名称或可识别的型号} \\
+  使用日期 & \textit{YYYY-MM-DD 至 YYYY-MM-DD} \\
+  \bottomrule
+\end{tabularx}
+
+\subsection*{具体使用目的和环节}
+逐项说明 AI 用于语言润色、代码调试、资料整理或其他环节；不得笼统写“辅助论文”。明确其输入、输出及对应论文位置。
+
+\subsection*{主要提示方式与使用过程}
+说明主要提示策略与迭代过程，可附具有代表性的交互片段。不要包含参赛者姓名、学校或赛区信息。
+
+\subsection*{采纳、人工修改与核验}
+除语言润色外，逐项记录 AI 输出是否采纳、由谁进行何种人工修改、采用何种数据或实验复核，以及最终结论是否发生变化。
+
+\subsection*{人工核验清单}
+\begin{enumerate}[label=\arabic*)]
+  \item 核对公式推导、单位、边界条件和符号一致性；
+  \item 在独立环境中运行全部代码并复现论文表图；
+  \item 核验引用、数据来源和事实陈述；
+  \item 确认核心建模与分析由参赛队主导；
+  \item 确认论文声明与本详情文件一致。
+\end{enumerate}
+
+
+%参考文献
+\begin{thebibliography}{9}%宽度9
+    \bibitem[1]{liuhaiyang2013latex}
+    刘海洋.
+    \newblock \LaTeX {}入门\allowbreak[J].
+    \newblock 电子工业出版社, 北京, 2013.
+    \bibitem[2]{mathematical-modeling}
+    全国大学生数学建模竞赛论文格式规范 (2023 年 修改).
+    \bibitem{3} \url{https://www.latexstudio.net}
+\end{thebibliography}
+  
+\newpage
+%附录
+\begin{appendices}
+
+\section{模板所用的宏包}
+\begin{table}[htbp]
+    \centering
+    \caption{宏包罗列}
+    \begin{tabular}{ccccc}
+        \toprule
+        \multicolumn{5}{c}{模板中已经加载的宏包} \\
+        \midrule
+        amsbsy & amsfonts & {amsgen} & {amsmath} & {amsopn} \\
+        amssymb & amstext & {appendix} & {array} & {atbegshi} \\
+        atveryend & auxhook & {bigdelim} & {bigintcalc} & {bigstrut} \\
+        bitset & bm    & {booktabs} & {calc} & {caption} \\
+        caption3 & CJKfntef & {cprotect} & {ctex} & {ctexhook} \\
+        ctexpatch & enumitem & {etexcmds} & {etoolbox} & {everysel} \\
+        expl3 & fix-cm & {fontenc} & {fontspec} & {fontspec-xetex} \\
+        geometry & gettitlestring & {graphics} & {graphicx} & {hobsub} \\
+        hobsub-generic & hobsub-hyperref & {hopatch} & {hxetex} & {hycolor} \\
+        hyperref & ifluatex & {ifpdf} & {ifthen} & {ifvtex} \\
+        ifxetex & indentfirst & {infwarerr} & {intcalc} & {keyval} \\
+        kvdefinekeys & kvoptions & {kvsetkeys} & {l3keys2e} & {letltxmacro} \\
+        listings & longtable & {lstmisc} & {ltcaption} & {ltxcmds} \\
+        multirow & nameref & {pdfescape} & {pdftexcmds} & {refcount} \\
+        rerunfilecheck & stringenc & {suffix} & {titletoc} & {tocloft} \\
+        trig  & ulem  & {uniquecounter} & {url} & {xcolor} \\
+        xcolor-patch & xeCJK & {xeCJKfntef} & {xeCJK-listings} & {xparse} \\
+        xtemplate & zhnumber &       &       &  \\
+        \bottomrule
+    \end{tabular}%
+    \label{tab:addlabel}%
+\end{table}%
+
+
+\section{代码一}
+
+\begin{lstlisting}[language=matlab]
+kk=2;[mdd,ndd]=size(dd);
+while ~isempty(V)
+[tmpd,j]=min(W(i,V));tmpj=V(j);
+for k=2:ndd
+[tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
+tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
+end
+tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
+if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
+else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
+if dd(2,tmp4)==ss(tmp6,tmp4)
+ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
+else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
+end;end
+dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
+[mdd,ndd]=size(dd);kk=kk+1;
+end; S=ss; D=dd(1,:);
+ \end{lstlisting}
+
+
+ \section{代码二}
+
+\begin{lstlisting}[language=c]
+kk=2;
+[mdd,ndd]=size(dd);
+while ~isempty(V)
+    [tmpd,j]=min(W(i,V));tmpj=V(j);
+for k=2:ndd
+    [tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
+    tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
+end
+    tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
+if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
+else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
+if dd(2,tmp4)==ss(tmp6,tmp4)
+    ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
+else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
+end;
+end
+    dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
+    [mdd,ndd]=size(dd);
+    kk=kk+1;
+end;
+S=ss;
+D=dd(1,:);
+ \end{lstlisting}
+\end{appendices}
+
+\end{document} 
