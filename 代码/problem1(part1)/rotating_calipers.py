@@ -1,24 +1,10 @@
-"""旋转卡壳（rotating calipers）求凸多边形直径 —— 纯 Python 实现，无第三方依赖。
+"""旋转卡壳（rotating calipers）求凸多边形直径
 
-理论出处
---------
-[1] Shamos, M. I., "Computational Geometry", Ph.D. thesis, Yale University, 1978.
-    —— 首次给出凸多边形直径的线性算法。
-[2] Toussaint, G. T., "Solving Geometric Problems with the Rotating Calipers",
-    Proc. IEEE MELECON'83, Athens, 1983.  （本仓库 文献/calipers.pdf，中文译文见
-    文献/calipers_中文翻译.md）—— 复述并一般化该算法，正式命名 rotating calipers。
-[3] Preparata, F. P. & Shamos, M. I., "Computational Geometry: An Introduction",
-    Springer, 1985. —— 教材级证明。
-
-核心结论
---------
+核心结论:
   定理 A  凸集的直径必在一对顶点（极点）上取到。
   定理 B  该顶点对必为对踵点对（存在平行支撑线的顶点对）。
   引理 C  沿多边形"旋转"卡尺时，对踵点是单调前进的，故全部对踵点对只有 O(n) 个。
 
-于是直径可在 O(n) 时间内求出，而不是枚举 O(n^2) 个顶点对。
-
-坐标使用纯 Python 元组 (x, y)，便于在无 numpy 的评测环境中直接使用。
 """
 
 from __future__ import annotations
@@ -42,9 +28,7 @@ __all__ = [
 EPS = 1e-12
 
 
-# --------------------------------------------------------------------------
 # 基础工具
-# --------------------------------------------------------------------------
 
 
 def cross(ox: float, oy: float, ax: float, ay: float, bx: float, by: float) -> float:
@@ -74,9 +58,7 @@ def rotate_to_ccw(poly):
     return list(poly) if s >= 0 else list(reversed(poly))
 
 
-# --------------------------------------------------------------------------
 # 凸包与顶点净化
-# --------------------------------------------------------------------------
 
 
 def convex_hull(points):
@@ -176,9 +158,7 @@ def min_edge_length(poly) -> float:
     return min(dist(poly[i], poly[(i + 1) % n]) for i in range(n))
 
 
-# --------------------------------------------------------------------------
 # 旋转卡壳
-# --------------------------------------------------------------------------
 
 
 def _area2(poly, i: int, j: int, k: int) -> float:
@@ -283,9 +263,7 @@ def antipodal_pairs(poly):
     return sorted(pairs)
 
 
-# --------------------------------------------------------------------------
 # 交叉校验用：暴力枚举
-# --------------------------------------------------------------------------
 
 
 def brute_force_diameter(poly):

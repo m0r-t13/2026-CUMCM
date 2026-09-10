@@ -1,23 +1,20 @@
 """由示向度构造定位区域（半平面求交），作为旋转卡壳的输入。
 
-纯 Python，无第三方依赖。
-
 几何设定
 --------
 检测点 S_i 处测得示向度 theta_i，误差界 alpha（本题 alpha = 1 度）。则该次观测
-给出的可行域是**角楔**
+给出的可行域是角楔
 
-    W_i = { S_i + t*(cos phi, sin phi) : t >= 0, |phi - theta_i| <= alpha }
+ W_i = { S_i + t*(cos phi, sin phi) : t >= 0, |phi - theta_i| <= alpha }
 
-记 u = (cos theta_i, sin theta_i)、t = tan(alpha)、d = P - S_i，则
+记 u = (cos theta_i, sin theta_i)、t = tan(alpha)、d = P - S_i，
+则 P in W_i  <=>  d.u >= 0  且  |d x u| <= t * (d.u)
 
-    P in W_i  <=>  d.u >= 0  且  |d x u| <= t * (d.u)
-
-拆开即 **3 个半平面** a*x + b*y <= c：
+拆开即 3 个半平面 a*x + b*y <= c：
   两条来自角楔的两条边界射线所在直线，第三条来自过顶点、垂直于中轴的
-  "前方"半平面。**第三条不可省**：只用两条边界会同时保留反向的对顶楔。
+  "前方"半平面。第三条不可省：只用两条边界会同时保留反向的对顶楔。
 
-定位区域 R = 交集 W_i，是凸多边形。其直径即问题 1 前半问所求。
+定位区域 R = 交集 W_i，是凸多边形
 """
 
 from __future__ import annotations
@@ -163,14 +160,10 @@ def region_from_bearings(
 
     detections : [(x, y, bearing_deg), ...]
 
-    可选约束（问题 1 基础模型不需要，问题 3/4 中有用）：
-      region_disk_radius : 叠加"干扰源位于以原点为心、该半径的圆域内"
-      reception_max      : 叠加"干扰源到各检测点距离 <= reception_max"
-
     返回 (status, polygon, notes)，polygon 为逆时针严格凸顶点列表。
 
     实现分两条路：
-      * 无约束（问题 1 的基础模型）——顶点枚举法，O(k^3)，精确且无需包围盒；
+      * 无约束——顶点枚举法，O(k^3)，精确且无需包围盒；
       * 有圆盘约束——从圆盘多边形出发逐条裁剪，避免 720*k 条半平面的枚举开销。
     """
     notes = []

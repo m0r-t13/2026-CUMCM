@@ -3,8 +3,7 @@
 运行：
     python test_rotating_calipers.py
 
-覆盖
-----
+覆盖:
   T1  与暴力枚举一致          —— 1000 个随机凸多边形，O(n) 结果 == O(n^2) 结果
   T2  直径端点确实是对踵点对  —— 定理 B 的直接检验
   T3  对踵点对的个数 <= 3n    —— 引理 C（O(n) 个对踵点对）
@@ -43,7 +42,7 @@ def rand_convex(n_extra=6, span=3000.0):
     return rc.convex_hull(pts)
 
 
-# ---------------------------------------------------------------- T1
+#T1
 def t1_agrees_with_brute_force():
     print("T1 旋转卡壳 O(n) vs 暴力枚举 O(n^2)")
     worst = 0.0
@@ -59,7 +58,7 @@ def t1_agrees_with_brute_force():
     check(worst < 1e-9, f"{tested} 个随机凸多边形，最大偏差 {worst:.3e} m")
 
 
-# ---------------------------------------------------------------- T2
+#T2
 def t2_diameter_is_antipodal():
     print("T2 直径端点必为对踵点对（定理 B）")
     bad = 0
@@ -74,7 +73,7 @@ def t2_diameter_is_antipodal():
     check(bad == 0, f"500 个多边形的直径对都在对踵点对集合中（例外 {bad}）")
 
 
-# ---------------------------------------------------------------- T3
+#T3
 def t3_count_is_linear():
     print("T3 对踵点对个数 <= 3n（引理 C）")
     worst_ratio = 0.0
@@ -106,7 +105,7 @@ def t3_count_is_linear():
           f"（差 {total / cb:.0f} 倍）")
 
 
-# ---------------------------------------------------------------- T4
+#T4
 def t4_antipodal_definition():
     print("T4 对踵点对枚举 vs 定义（平行支撑线）暴力法")
     bad = 0
@@ -139,7 +138,7 @@ def t4_antipodal_definition():
           f"{tested} 个多边形：卡壳枚举的每一对都确为对踵点对（例外 {bad}）")
 
 
-# ---------------------------------------------------------------- T5
+#T5
 def t5_degenerate():
     print("T5 退化输入")
     ok = True
@@ -160,7 +159,7 @@ def t5_degenerate():
     check(ok, "n=0/1/2、全共线、重复点均正确")
 
 
-# ---------------------------------------------------------------- T6
+#T6
 def t6_parallel_edges():
     print("T6 平行边情形（矩形、正多边形）")
     ok = True
@@ -179,7 +178,7 @@ def t6_parallel_edges():
     check(ok, f"矩形 D={math.hypot(10, 4):.6f}、正24边形 D={d:.6f}（应为 200）")
 
 
-# ---------------------------------------------------------------- T7
+#T7
 def t7_end_to_end():
     print("T7 端到端：真源必须落在定位区域内部")
     bad = 0

@@ -33,9 +33,7 @@ OUTDIR = os.path.join(HERE, "results")
 ARENA_RADIUS = 1800.0
 
 
-# --------------------------------------------------------------------------
 # 求解
-# --------------------------------------------------------------------------
 
 
 def solve(detections, alpha_deg: float = 1.0, name: str = "case", **kw):
@@ -113,12 +111,10 @@ def report(res) -> None:
         print(f"    达到直径的顶点对不唯一：{res['tied_pairs']}")
 
 
-# --------------------------------------------------------------------------
 # 内置算例
-# --------------------------------------------------------------------------
 
 
-def _bearings_from_source(G, pts):
+def dfs(G, pts):
     return [
         math.degrees(math.atan2(G[1] - py, G[0] - px)) % 360.0 for px, py in pts
     ]
@@ -128,7 +124,7 @@ def demo_cases():
     cases = {}
 
     def make(key, name, G, pts, **kw):
-        bs = _bearings_from_source(G, pts)
+        bs = dfs(G, pts)
         cases[key] = dict(
             name=name,
             alpha_deg=kw.pop("alpha_deg", 1.0),
@@ -168,13 +164,11 @@ def demo_cases():
           (G[0] + 1400.0 * math.cos(math.radians(300.0)),
            G[1] + 1400.0 * math.sin(math.radians(300.0)))])
 
-    # ------------------------------------------------------------------
     # 多站算例：同一组 12 个检测点，按固定顺序取前 k 个。
     # 这样 k 增大时约束单调增多，定位区域**嵌套收缩**，直径单调不增，
     # 可直接看出"多站交会提高精度"的规律，并逼近 n = 2k 的顶点数上界。
     # 方向角经挑选：任意两方向的夹角 >= 15°（区域有界），且不存在恰好
     # 相差 180° 的一对（避免出现平行的边界直线）。
-    # ------------------------------------------------------------------
     multi = [
         (20.0, 1200.0), (120.0, 1350.0), (225.0, 1100.0), (310.0, 1450.0),
         (55.0, 1250.0), (140.0, 1300.0), (275.0, 1150.0), (35.0, 1400.0),
@@ -186,7 +180,7 @@ def demo_cases():
         for ang, rr in multi[:k]:
             a = math.radians(ang)
             pts.append((G[0] + rr * math.cos(a), G[1] + rr * math.sin(a)))
-        bs = _bearings_from_source(G, pts)
+        bs = dfs(G, pts)
         cases[key] = dict(
             name=name,
             alpha_deg=1.0,
@@ -219,7 +213,7 @@ def nested_table():
         for ang, rr in multi[:k]:
             a = math.radians(ang)
             pts.append((G[0] + rr * math.cos(a), G[1] + rr * math.sin(a)))
-        bs = _bearings_from_source(G, pts)
+        bs = dfs(G, pts)
         dets = [(px, py, b) for (px, py), b in zip(pts, bs)]
         res = solve(dets, 1.0, name=f"k={k}")
         if res["status"] != "ok":
@@ -255,11 +249,7 @@ def run_case(case, save=True):
     return res
 
 
-# --------------------------------------------------------------------------
 # 绘图
-# --------------------------------------------------------------------------
-
-
 def plot(res, path):
     import matplotlib
 
@@ -338,9 +328,7 @@ def plot(res, path):
     print(f"  [图] {path}")
 
 
-# --------------------------------------------------------------------------
 # 规模对比：卡壳 O(n) vs 暴力 O(n^2)
-# --------------------------------------------------------------------------
 
 
 def benchmark(seed: int = 20260910):
@@ -382,9 +370,7 @@ def benchmark(seed: int = 20260910):
           "（保证只需考察 O(n) 个对踵点对），而非本题的运行速度。")
 
 
-# --------------------------------------------------------------------------
 # CLI
-# --------------------------------------------------------------------------
 
 
 def main(argv=None) -> int:
