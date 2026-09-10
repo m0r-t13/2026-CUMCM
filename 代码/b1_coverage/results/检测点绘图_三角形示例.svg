@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="800" viewBox="0 0 1100 800">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Microsoft YaHei, SimHei, sans-serif">
+<rect x="0" y="0" width="1100" height="800" fill="white" stroke="white" stroke-width="1"/>
+<text x="550.0" y="24" fill="#253348" font-size="17.333333333333332" text-anchor="middle" dominant-baseline="central">定位区域放大图</text>
+<polyline points="208.8305237474674,58 208.8305237474674,684" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="208.8305237474674" y="702" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">-20</text>
+<polyline points="410.30775690857917,58 410.30775690857917,684" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="410.30775690857917" y="702" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">-10</text>
+<polyline points="611.7849900696909,58 611.7849900696909,684" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="611.7849900696909" y="702" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">0</text>
+<polyline points="813.2622232308028,58 813.2622232308028,684" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="813.2622232308028" y="702" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">10</text>
+<polyline points="1014.7394563919145,58 1014.7394563919145,684" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="1014.7394563919145" y="702" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">20</text>
+<polyline points="88,585.973648640811 1066,585.973648640811" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="79" y="585.973648640811" fill="#253348" font-size="12.0" text-anchor="end" dominant-baseline="central">-10</text>
+<polyline points="88,384.4964154796993 1066,384.4964154796993" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="79" y="384.4964154796993" fill="#253348" font-size="12.0" text-anchor="end" dominant-baseline="central">0</text>
+<polyline points="88,183.0191823185875 1066,183.0191823185875" fill="none" stroke="#e6ebf1" stroke-width="1"/>
+<text x="79" y="183.0191823185875" fill="#253348" font-size="12.0" text-anchor="end" dominant-baseline="central">10</text>
+<rect x="88" y="58" width="978" height="626" fill="none" stroke="#9aabba" stroke-width="1"/>
+<text x="577.0" y="727" fill="#253348" font-size="13.333333333333334" text-anchor="middle" dominant-baseline="central">x / 米（东）</text>
+<text x="88" y="40" fill="#253348" font-size="13.333333333333334" text-anchor="start" dominant-baseline="central">y / 米（北）</text>
+<polygon points="410.3077569085666,500.8193502808482 813.262223230806,500.8193502808482 611.7849900696864,151.8505458773879" fill="#e4edfc" stroke="#245caa" stroke-width="2"/>
+<polyline points="1065.8405074148427,58.000000000000966 718.8430412054084,684.0000000000007" fill="none" stroke="#7d8da5" stroke-width="1" stroke-dasharray="7 4"/>
+<polyline points="665.9696279955888,58.000000000000966 304.54835948288286,684.0000000000007" fill="none" stroke="#aeb8c7" stroke-width="1" stroke-dasharray="2 4"/>
+<polyline points="88.00000000000114,154.76543446607164 1065.9999999999982,137.69438096627496" fill="none" stroke="#7d8da5" stroke-width="1" stroke-dasharray="7 4"/>
+<polyline points="88.00000000000114,500.8193502808482 1065.9999999999982,500.8193502808482" fill="none" stroke="#aeb8c7" stroke-width="1" stroke-dasharray="2 4"/>
+<polyline points="513.1093281123916,684.0000000000007 136.9705806011375,57.999999999998636" fill="none" stroke="#7d8da5" stroke-width="1" stroke-dasharray="7 4"/>
+<polyline points="919.0216206564899,684.0000000000007 557.600352143784,57.999999999998636" fill="none" stroke="#aeb8c7" stroke-width="1" stroke-dasharray="2 4"/>
+<polyline points="98.59232295100293,684.0000000000007 88.00000000000114,667.0487398387573" fill="none" stroke="#aeb8c7" stroke-width="1" stroke-dasharray="2 4"/>
+<ellipse cx="611.7849900696863" cy="384.49641547969475" rx="232.6458696023069" ry="232.6458696023069" fill="none" stroke="#158267" stroke-width="2.3"/>
+<polyline points="606.7849900696863,384.49641547969475 616.7849900696863,384.49641547969475" fill="none" stroke="#158267" stroke-width="2"/>
+<polyline points="611.7849900696863,379.49641547969475 611.7849900696863,389.49641547969475" fill="none" stroke="#158267" stroke-width="2"/>
+<ellipse cx="511.0463734891265" cy="326.3349480791181" rx="201.47723316111967" ry="201.47723316111973" fill="none" stroke="#c03f4b" stroke-width="2.3" stroke-dasharray="7 5"/>
+<polyline points="506.0463734891265,326.3349480791181 516.0463734891265,326.3349480791181" fill="none" stroke="#c03f4b" stroke-width="2"/>
+<polyline points="511.0463734891265,321.3349480791181 511.0463734891265,331.3349480791181" fill="none" stroke="#c03f4b" stroke-width="2"/>
+<polyline points="410.3077569085666,500.8193502808482 611.7849900696864,151.8505458773879" fill="none" stroke="#c03f4b" stroke-width="2.5"/>
+<ellipse cx="410.3077569085666" cy="500.8193502808482" rx="3.5" ry="3.5" fill="#245caa" stroke="#245caa" stroke-width="1"/>
+<text x="418.3077569085666" y="489.8193502808482" fill="#245caa" font-size="13.333333333333334" text-anchor="start" dominant-baseline="central">V1</text>
+<ellipse cx="813.262223230806" cy="500.8193502808482" rx="3.5" ry="3.5" fill="#245caa" stroke="#245caa" stroke-width="1"/>
+<text x="821.262223230806" y="489.8193502808482" fill="#245caa" font-size="13.333333333333334" text-anchor="start" dominant-baseline="central">V2</text>
+<ellipse cx="611.7849900696864" cy="151.8505458773879" rx="3.5" ry="3.5" fill="#245caa" stroke="#245caa" stroke-width="1"/>
+<text x="619.7849900696864" y="140.8505458773879" fill="#245caa" font-size="13.333333333333334" text-anchor="start" dominant-baseline="central">V3</text>
+<ellipse cx="813.262223230806" cy="500.8193502808482" rx="7.0" ry="7.0" fill="none" stroke="#c03f4b" stroke-width="2"/>
+<polyline points="88.0,757 111.0,757" fill="none" stroke="#245caa" stroke-width="2"/>
+<text x="117.0" y="757" fill="#253348" font-size="12.0" text-anchor="start" dominant-baseline="central">定位区域</text>
+<polyline points="414.0,757 437.0,757" fill="none" stroke="#c03f4b" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="443.0" y="757" fill="#253348" font-size="12.0" text-anchor="start" dominant-baseline="central">区域直径及同直径圆</text>
+<polyline points="740.0,757 763.0,757" fill="none" stroke="#158267" stroke-width="2"/>
+<text x="769.0" y="757" fill="#253348" font-size="12.0" text-anchor="start" dominant-baseline="central">最小包围圆</text>
+<text x="550.0" y="784" fill="#253348" font-size="12.0" text-anchor="middle" dominant-baseline="central">D = 20.000000 米   |   R_min = 11.547005 米   |   同直径圆：不可覆盖</text>
+</g></svg>

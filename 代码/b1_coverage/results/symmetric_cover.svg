@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="650" viewBox="0 0 920 650"><rect width="920" height="650" fill="#fafbfe"/>
+<g font-family="Arial, sans-serif" fill="#182337">
+<text x="30" y="38" font-size="23">B1: Does the diameter circle cover the region?</text>
+<circle cx="340.0" cy="330.0" r="208.0" fill="none" stroke="#13866b" stroke-width="2.5" stroke-dasharray=""/>
+<circle cx="340.00000000000006" cy="330.0" r="207.99999999999994" fill="none" stroke="#c64449" stroke-width="2.5" stroke-dasharray="7 5"/>
+<polygon points="187.87843006,188.14434111 192.92178951,477.07821049 481.85565889,482.12156994 487.07821049,182.92178951" fill="#658fd0" fill-opacity="0.18" stroke="#336ca9" stroke-width="2"/>
+<line x1="192.92178951319806" y1="477.0782104868017" x2="487.07821048680205" y2="182.92178951319826" stroke="#c64449" stroke-width="2"/>
+<circle cx="187.8784300632125" cy="188.14434110700046" r="4" fill="#336ca9"/><text x="194.8784300632125" y="180.14434110700046" font-size="16">V0</text>
+<circle cx="192.92178951319806" cy="477.0782104868017" r="4" fill="#336ca9"/><text x="199.92178951319806" y="469.0782104868017" font-size="16">V1</text>
+<circle cx="481.8556588929998" cy="482.1215699367873" r="4" fill="#336ca9"/><text x="488.8556588929998" y="474.1215699367873" font-size="16">V2</text>
+<circle cx="487.07821048680205" cy="182.92178951319826" r="4" fill="#336ca9"/><text x="494.07821048680205" y="174.92178951319826" font-size="16">V3</text>
+<circle cx="340.00000000000006" cy="330.0" r="4" fill="#c64449"/>
+<circle cx="340.0" cy="330.0" r="4" fill="#13866b"/>
+<text x="645" y="150" fill="#c64449" font-size="16">Diameter circle</text>
+<text x="645" y="186" fill="#182337" font-size="16">r = D/2 = 24.692713 m</text>
+<text x="645" y="222" fill="#13866b" font-size="16">Minimum enclosing circle</text>
+<text x="645" y="258" fill="#182337" font-size="16">R = 24.692713 m</text>
+<text x="645" y="294" fill="#182337" font-size="16">Covers region: True</text>
+<text x="645" y="330" fill="#182337" font-size="16">Excess: 0.000000 m</text>
+</g></svg>

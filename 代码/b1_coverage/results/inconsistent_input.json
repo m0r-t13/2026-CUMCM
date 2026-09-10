@@ -1,0 +1,14 @@
+{
+  "observations": [
+    {
+      "x": 0,
+      "y": 0,
+      "bearing_deg": 180
+    },
+    {
+      "x": 100,
+      "y": 0,
+      "bearing_deg": 0
+    }
+  ]
+}
