@@ -1,0 +1,19 @@
+{
+  "status": "empty",
+  "observations": [
+    {
+      "x": 0,
+      "y": 0,
+      "bearing_deg": 180
+    },
+    {
+      "x": 100,
+      "y": 0,
+      "bearing_deg": 0
+    }
+  ],
+  "error_deg": 1.0,
+  "model": "intersection of forward bearing wedges only",
+  "tolerance_m": 1e-07,
+  "explanation": "No common localization point."
+}

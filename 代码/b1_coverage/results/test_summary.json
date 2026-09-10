@@ -1,0 +1,45 @@
+{
+  "seed": 20260910,
+  "trials": 400,
+  "counts": {
+    "bounded_covered": 309,
+    "bounded_not_covered": 90,
+    "unbounded": 1,
+    "empty": 0
+  },
+  "by_station_count": {
+    "2": {
+      "bounded_covered": 78,
+      "bounded_not_covered": 1,
+      "unbounded": 1,
+      "empty": 0
+    },
+    "3": {
+      "bounded_covered": 58,
+      "bounded_not_covered": 22,
+      "unbounded": 0,
+      "empty": 0
+    },
+    "4": {
+      "bounded_covered": 62,
+      "bounded_not_covered": 18,
+      "unbounded": 0,
+      "empty": 0
+    },
+    "5": {
+      "bounded_covered": 58,
+      "bounded_not_covered": 22,
+      "unbounded": 0,
+      "empty": 0
+    },
+    "6": {
+      "bounded_covered": 53,
+      "bounded_not_covered": 27,
+      "unbounded": 0,
+      "empty": 0
+    }
+  },
+  "mec_independent_optimization_checks": 20,
+  "sampling": "Source (0,0); 2..6 stations; uniform azimuth, radius 200..1000 m; uniform error -1..1 deg.",
+  "caution": "Synthetic reproducible experiments, not simulator logs or a universal failure probability."
+}

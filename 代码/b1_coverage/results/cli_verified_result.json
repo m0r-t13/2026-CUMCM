@@ -1,0 +1,82 @@
+{
+  "status": "bounded",
+  "observations": [
+    {
+      "x": 500.0,
+      "y": 877.5724091682313,
+      "bearing_deg": 241.0
+    },
+    {
+      "x": -1010.0,
+      "y": -5.773502691896258,
+      "bearing_deg": 1.0
+    },
+    {
+      "x": 510.0,
+      "y": -871.798906476335,
+      "bearing_deg": 120.99999999999999
+    }
+  ],
+  "error_deg": 1.0,
+  "model": "intersection of forward bearing wedges only",
+  "tolerance_m": 1e-07,
+  "vertices": [
+    [
+      -10.000000000000624,
+      -5.773502691896258
+    ],
+    [
+      10.000000000000158,
+      -5.773502691896258
+    ],
+    [
+      -2.2665320196840938e-13,
+      11.547005383793191
+    ]
+  ],
+  "vertex_count": 3,
+  "diameter_m": 20.000000000000785,
+  "diameter_pair_indices": [
+    0,
+    2
+  ],
+  "diameter_endpoints": [
+    [
+      -10.000000000000624,
+      -5.773502691896258
+    ],
+    [
+      -2.2665320196840938e-13,
+      11.547005383793191
+    ]
+  ],
+  "diameter_circle_center": [
+    -5.000000000000425,
+    2.8867513459484666
+  ],
+  "diameter_circle_radius_m": 10.000000000000393,
+  "covers": false,
+  "max_distance_from_diameter_center_m": 17.320508075689446,
+  "maximum_radial_excess_m": 7.3205080756890535,
+  "witness": [
+    10.000000000000158,
+    -5.773502691896258
+  ],
+  "vertex_distances_m": [
+    10.000000000000393,
+    17.320508075689446,
+    10.000000000000393
+  ],
+  "mec_center": [
+    -2.327027459614328e-13,
+    2.255973186038318e-13
+  ],
+  "mec_radius_m": 11.547005383792968,
+  "mec_support_indices": [
+    0,
+    1,
+    2
+  ],
+  "minimum_covering_diameter_m": 23.094010767585935,
+  "radius_ratio": 1.1547005383792515
+}

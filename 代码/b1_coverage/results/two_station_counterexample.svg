@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="650" viewBox="0 0 920 650"><rect width="920" height="650" fill="#fafbfe"/>
+<g font-family="Arial, sans-serif" fill="#182337">
+<text x="30" y="38" font-size="23">B1: Does the diameter circle cover the region?</text>
+<circle cx="343.1902095539153" cy="329.9620344045946" r="204.80979044608475" fill="none" stroke="#13866b" stroke-width="2.5" stroke-dasharray=""/>
+<circle cx="336.70707691685556" cy="330.1406791246346" r="204.70707691685558" fill="none" stroke="#c64449" stroke-width="2.5" stroke-dasharray="7 5"/>
+<polygon points="156.39092035,248.83872908 342.34570329,534.77008374 531.27251773,411.03049692 331.06845054,125.51127451" fill="#658fd0" fill-opacity="0.18" stroke="#336ca9" stroke-width="2"/>
+<line x1="342.3457032948093" y1="534.7700837379825" x2="331.06845053890186" y2="125.51127451128659" stroke="#c64449" stroke-width="2"/>
+<circle cx="156.39092035485365" cy="248.83872907731143" r="4" fill="#336ca9"/><text x="163.39092035485365" y="240.83872907731143" font-size="16">V0</text>
+<circle cx="342.3457032948093" cy="534.7700837379825" r="4" fill="#336ca9"/><text x="349.3457032948093" y="526.7700837379825" font-size="16">V1</text>
+<circle cx="531.2725177257114" cy="411.0304969244838" r="4" fill="#336ca9"/><text x="538.2725177257114" y="403.0304969244838" font-size="16">V2</text>
+<circle cx="331.06845053890186" cy="125.51127451128659" r="4" fill="#336ca9"/><text x="338.06845053890186" y="117.51127451128659" font-size="16">V3</text>
+<circle cx="336.70707691685556" cy="330.1406791246346" r="4" fill="#c64449"/>
+<circle cx="343.1902095539153" cy="329.9620344045946" r="4" fill="#13866b"/>
+<text x="645" y="150" fill="#c64449" font-size="16">Diameter circle</text>
+<text x="645" y="186" fill="#182337" font-size="16">r = D/2 = 17.257402 m</text>
+<text x="645" y="222" fill="#13866b" font-size="16">Minimum enclosing circle</text>
+<text x="645" y="258" fill="#182337" font-size="16">R = 17.266061 m</text>
+<text x="645" y="294" fill="#182337" font-size="16">Covers region: False</text>
+<text x="645" y="330" fill="#182337" font-size="16">Excess: 0.506098 m</text>
+</g></svg>
