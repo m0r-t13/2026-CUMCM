@@ -1,0 +1,32 @@
+{
+  "name": "case4 双站同方位（方向锥重叠 → 区域无界）",
+  "status": "unbounded",
+  "alpha_deg": 1.0,
+  "detections": [
+    [
+      1350.0,
+      -250.0,
+      180.0
+    ],
+    [
+      1450.0,
+      -250.0,
+      180.0
+    ]
+  ],
+  "notes": [
+    "角楔交集无界：各示向度方向锥存在公共方向，没有有限的定位区域直径。需增加一个不同方位的检测点，或叠加圆域/接收距离约束。"
+  ],
+  "region": [],
+  "n_vertices": 0,
+  "area": 0.0,
+  "perimeter": 0.0,
+  "min_edge": 0.0,
+  "diameter": 0.0,
+  "diameter_pair": null,
+  "diameter_pair_brute": null,
+  "calipers_vs_brute": 0.0,
+  "antipodal_pairs": [],
+  "n_antipodal": 0,
+  "tied_pairs": []
+}

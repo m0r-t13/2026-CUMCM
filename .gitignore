@@ -14,3 +14,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Local PDF tooling (pypdf unpacked here) and scratch dirs
+.tools/
+.tmp/
+.dl/
+
