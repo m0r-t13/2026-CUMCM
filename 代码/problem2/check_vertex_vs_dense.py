@@ -1,7 +1,5 @@
 """核查：把源不确定区只取 4 个顶点，会不会漏掉真正的最坏情况？
 
-背景
-----
 我的版本对"定位误差"取 max 时只用了源可行域的 4 个顶点，依据是
 "凸函数最大值在极点取到"。但那个依据只对**探测约束**（|S2-G| 关于 G 凸）严格成立；
 对**误差函数 D(G)** 不一定成立（D 不是 G 的凸函数）。
@@ -25,7 +23,7 @@ from screen_min_error import (  # noqa: E402
 )
 
 
-def dense_source(S1, th, r_cap, n_eps=21, n_r=60):
+def ds(S1, th, r_cap, n_eps=21, n_r=60):
     """把源不确定区稠密采样（含角楔厚度）。"""
     S1 = np.asarray(S1, float)
     pts = []
@@ -87,7 +85,7 @@ def main():
         u1, n1 = unit(th), unit(th + 90.0)
         V4 = source_vertices(S1, th, T_RECV)
         VE = edge_source(S1, th, T_RECV, 80)
-        Dd = dense_source(S1, th, T_RECV)
+        Dd = ds(S1, th, T_RECV)
         Gd = np.vstack([Dd, V4])
         print(f"\n{tag}   4顶点={len(V4)}  楔边采样={len(VE)}  全稠密={len(Gd)}")
         print(f"   {'探针 (a,b)':<16}{'D(4顶点)':>10}{'D(楔边)':>10}{'D(全稠密)':>11}"

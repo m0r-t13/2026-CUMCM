@@ -1,9 +1,8 @@
 """最坏交会角 γ_min 越大就越好吗？—— 用真实定位误差来检验。
 
-疑问
-----
+疑问：
 前面一直把"最大化最坏交会角 γ_min"当作第二问的目标。但交会角只是
-**代理指标**：真正的定位误差还取决于两个距离。
+代理指标：真正的定位误差还取决于两个距离。
 
 本脚本直接对比两个目标：
     目标 A：最大化 γ_min（最坏交会角）
@@ -11,10 +10,10 @@
 
 做法
 ----
-对场景 A（S1=(0,0), θ1=0°）在 (a,b) 网格上：
+对场景 A(S1=(0,0), θ1=0°)在 (a,b) 网格上：
   1. 约束：对源可行域每个顶点，|S2-V| ≤ R_min=1000；且 |S2| ≤ 1800
-  2. 目标 A：γ_min(S2) = 90° − max_V |γ(V;S2) − 90°|
-  3. 目标 B：D_worst(S2) = max_V [ 源在 V 时两站交会定位区域的直径 ]
+  2. 目标 A:γ_min(S2) = 90° − max_V |γ(V;S2) − 90°|
+  3. 目标 B:D_worst(S2) = max_V [ 源在 V 时两站交会定位区域的直径 ]
      定位区域用问题一的半平面求交 + 顶点对枚举精确计算
   4. 分别取最优，比较两个最优点是否一致
 """
@@ -185,7 +184,7 @@ def main():
             dmax = 0.0
             ok = True
             for V in Vo:
-                th1v = bearing_from(S1, V)      # 注意：用**真实**示向度，不是 0°
+                th1v = bearing_from(S1, V)      # 注意：用真实示向度，不是 0°
                 th2 = bearing_from(S2, V)
                 d = region_diameter(S1, th1v, S2, th2)
                 if d is None:
@@ -320,7 +319,7 @@ def main():
                  color="tab:orange", fontsize=11)
     ax2.set_yscale("log")
     ax2.set_xlabel("最坏交会角 $\\gamma_{min}$ / 度")
-    ax2.set_ylabel("该区间内最坏定位直径的**中位数** / m（对数轴）")
+    ax2.set_ylabel("该区间内最坏定位直径的中位数 / m（对数轴）")
     ax2.grid(alpha=0.25, which="both")
     ax2.set_title("(b) 作为粗筛是有效的：中位数从 475 m 降到 131 m，\n"
                   "但降幅在 $\\gamma_{min}>35°$ 后明显变平", fontsize=12)
