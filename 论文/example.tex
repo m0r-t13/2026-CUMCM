@@ -7,6 +7,8 @@
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
 \usepackage{cumcm2026}
+\newcommand{\pTwoPageBreak}{}
+\newcommand{\pTwoFigDir}{figures}
 \usetikzlibrary{arrows.meta}
 
 \newtcolorbox{framee}[1][]{
@@ -136,9 +138,25 @@
 
 对于圆覆盖问题，只由直径的长度大于等于区域内任意两点的距离不能直接推断同直径圆
 能够覆盖整个区域。因此，需以直径中点为圆心、区域直径的一半为半径，依次检验各顶
-点是否均位于圆内，并结合该最小包围圆与反例的特点分析给出结论。
+点是否均位于圆内，并结合该最小包围圆的特点与反例分析给出结论。
 
 \subsection{问题二的分析}
+
+问题二要求我们根据已知的一个探测点关于某全向干扰源所测得的示向度，给出第二个探测点
+的选择策略及能得到较好定位效果的候选区域。问题的关键在于如何平衡信号接受条件与交会
+定位精度，使得第二次观测能够有效缩小干扰源位置的不确定范围。
+
+首先，结合示向度误差、有效接收半径及目标区域边界，确定干扰源的可能位置范围，并分析
+各可能源位置下的接收条件，得到第二检测点的可行范围。随后，沿用问题一中定位区域直径
+的计算方法，以最坏情况下的区域直径作为选点评价指标。
+
+求解时，对第二检测点的可行范围进行网格搜索，并对可能的源位置采样，以各采样情形下定
+位区域直径的最大值近似评价备选点。通过加密采样检验结果的稳定性，选出评价值最小的位
+置，再设置允许偏离最优值的比例，保留效果接近最优的备选点，形成候选区域。
+
+\subsection{问题三的分析}
+
+\subsection{问题四的分析}
 
 \section{模型假设}
 
@@ -526,6 +544,262 @@ $2R_*=D$，即能够被同直径圆完全覆盖。计算采用 $10^{-7}$ 米的�
 
 因此，以定位区域直径为直径的圆不一定能覆盖该区域，应结合
 顶点覆盖判据判断。
+
+\section{问题二模型的建立与求解}
+
+\subsection{首次观测下的干扰源可行域}
+
+针对问题二，本文首先根据第一次检测确定干扰源位置范围与第二次观测的接收条件，再以
+两个检测点角域交集的直径评价定位效果，通过网格搜索确定近似最优检测点及第二检测点
+的候选区域。
+
+记首个检测点为 $S_1=(x_1,y_1)$，测得的示向度为 $\theta_1$。设目标圆域为 
+$\Omega=\{X:\|X\|_2\le1800\}$，误差仍为 $\alpha=1^\circ$。角域的表示沿用问题
+一，将以S为顶点，$\theta$为中心方向的误差角域记为 $W(S,\theta)$。则首次检测
+可表示为：$W_1=W(S_1,\theta_1)$。长度单位统一为米，距离均取欧氏距离。
+
+由题，全向干扰源的最大可被有效接收距离为 $R\in[1000,1500]$，且在距离不超过 $5$ m 时
+将返回近场信息而非示向度。既然我们已经得到了第一次检测的示向度，则干扰源位置 $G$ 必须满足
+
+\begin{equation}\label{eq:p2-source}
+\mathcal T=W_1\cap\Omega\cap\{G:5<\|G-S_1\|_2\le1500\}.
+\end{equation}
+
+其中，目标圆域保证所有点都在场地内，角域反映测向的不确定性，距离上限由首次成功接收信号获得。
+数值采样以 $5$m 作为近端极限，由于其不返回示向度，故不将其视为有效的示向度观测。
+
+令 $u(\varphi)=(\cos\varphi,\sin\varphi)$。对于符合要求的 $S_1$，从该点出发沿任意
+方向 $\varphi$ 到达圆域边界距离的数学表达式为
+
+\begin{equation}\label{eq:p2-arena}
+t_\Omega(\varphi)=-S_1\cdot u(\varphi)
++\sqrt{[S_1\cdot u(\varphi)]^2+1800^2-\|S_1\|_2^2}.
+\end{equation}
+
+因此，首次观测下的干扰源可行域关于角度与距离的参数化表示为
+
+\begin{equation}\label{eq:p2-param}
+G=S_1+r u(\varphi),\quad
+|\varphi-\theta_1|_{\rm circ}\le\alpha,\quad
+5<r\le\min\{1500,t_\Omega(\varphi)\}.
+\end{equation}
+
+\subsection{第二检测点的接收约束}
+
+令 $r_1(G)=\|G-S_1\|_2$。首次检测成功接收说明 $R\ge r_1(G)$，因此，在给定可能源
+位置 $G$ 时，与已有观测相容的最小接收半径为 $\max\{1000,r_1(G)\}$。能够保证
+第二次检测仍能接收到干扰源信号的理想可行集合为
+
+\begin{equation}\label{eq:p2-receive}
+\mathcal A=\left\{S_2\in\Omega:
+\|S_2-G\|_2\le\max\{1000,r_1(G)\},\quad\forall G\in\mathcal T\right\}.
+\end{equation}
+
+式 \eqref{eq:p2-receive} 综合考虑了干扰源位置与接收半径的不确定性；任何首次检测
+距检测点超过 $1000$ m的源，其接收半径最大值也必然超过 $1000$ m。
+
+因此，只需约束各方向上距第一观测点不超过 $1000$ m的源位置。
+
+在干扰源可行域近端、远端左右两侧各取两个代表点，以每个点为圆心作圆相交得
+
+\begin{equation}\label{eq:p2-feasible-region}
+\hat{\mathcal A}
+=
+\Omega\cap
+\bigcap_{j=1}^{4}
+\left\{
+S_2:
+\|S_2-V_j\|_2\le 1000
+\right\}.
+\end{equation}
+
+式 \eqref{eq:p2-feasible-region} 即为所求检测点近似可行域 $\mathcal A$。
+
+\subsection{定位效果的评价与选址模型}
+
+\subsubsection{由接收可行性向精确定位转移}
+
+只对第二次检测点进行粗粒度筛查以确保能再次接收信号显然是不够的，显然这并不意味
+着定位区域也足够的小。不难发现，当两观测方向接近时，角域的交集往往十分狭长；在适当
+地向侧向移动后，交会区域狭长的几何形状能够得到改善，但实际效果还与观测距离有关。
+因此，本问沿用问题一的区域直径作为选点的核心指标。图\ref{fig:p2-geometry}给出了
+干扰源可行域与检测点筛选的示例。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{\pTwoFigDir/p2_geometry.pdf}
+\caption{首次观测的源可行域与第二检测点筛选示意。左图横向放大以显示真实
+的 $\pm1^\circ$ 角域；右图等比例显示四点约束筛选的网格及近优候选点。}
+\label{fig:p2-geometry}
+\end{figure}
+
+\subsubsection{源位置不确定时的模拟效果评价}
+
+在第二检测点的位置确定后，定位效果受干扰源位置的不确定性影响。因此，需要假设干扰源
+位于不同位置，分别计算固定的第二检测点与这些干扰源的交会区域大小并比较它们的表现。
+
+首先，固定一个备选检测点 $S_2$，并在源可行域 $\mathcal T$ 中假设一个源位置 $G$ 。
+根据此时的两个角域计算交会区域的直径并评估这一情形下的定位效果
+
+\begin{equation}\label{eq:d0}
+D_0(G;S_2)=\operatorname{diam} P_0(G;S_2).
+\end{equation}
+
+直径越小，说明模拟观测后得到干扰源的位置范围越集中。
+
+随后，保持 $S_2$ 不变，依次改变假设源位置 $G$。由于源的真实位置未知，采用其中最大
+的定位直径作为该检测点的评价值。数值计算时，取源采样点 $G_1,\ldots,G_N$，得到
+
+\begin{equation}\label{eq:jhat}
+\widehat{J}(S_2)
+=
+\max_{1\le j\le N} D_0(G_j;S_2).
+\end{equation}
+
+该值反映了在检查的所有源位置中，第二检测点放在 $S_2$ 时最差的定位表现。对其他备选点
+进行相同计算，选择评价值最小的位置，即为近似最优的第二检测点。
+
+\subsection{网格搜索与近优候选区域的构造}
+
+\subsubsection{可行位置与源位置的离散化}
+
+理想集合\eqref{eq:p2-receive}包含连续多个源位置约束，因此实际使用的有限约束集合如式
+\eqref{eq:p2-feasible-region}所示。对截断半径 $c$ ，定义
+
+\begin{equation}\label{eq:p2-four}
+V_c=\bigcup_{s=\pm1}\left\{S_1+5u(\theta_1+s\alpha),\ 
+S_1+\rho_s(c)u(\theta_1+s\alpha)\right\},\quad
+\rho_s(c)=\min\{c,t_\Omega(\theta_1+s\alpha)\}.
+\end{equation}
+
+用 $V_{1000}$ 中的四点检查 $\|S_2-V\|_2\le1000$。距离函数的凸性保证四点检查能完全覆盖其凸包。
+
+以 $u_1=u(\theta_1)$ 为纵向单位向量，以 $n_1=(-\sin\theta_1,\cos\theta_1)$ 
+为侧向单位向量，写成
+
+\begin{equation}\label{eq:p2-grid}
+S_2=S_1+a u_1+b n_1,\qquad
+a\in[-1800,1005],\quad b\in[-1000,1000].
+\end{equation}
+
+分别将两个区间等分为 $130$ 个网格坐标，删除场地外及不满足四点接收约束的位置，得到
+网格集合 $\widehat{\mathcal A}_h$。其中 $a$、$b$ 分别表示前向与侧向位移，便于
+解释选点结果。
+
+由于无法证明最大直径一定是在端点处取得，故误差评价不能仅检查四个端点。沿角域的两条
+边各取$100$个等距干扰源位置，组成 $\mathcal G_N$ ，计算
+
+\begin{equation}\label{eq:p2-sampled}
+\widehat J_{\min}=\min_{S_2\in\widehat{\mathcal A}_h}\widehat J(S_2).
+\end{equation}
+
+由于当前模型仅在采样评价有限的点之间进行比较，有限采样源可能会漏掉关键位置，网格也可能错过连续最优点
+，故$\widehat J_{\min}$只代表当前离散模型的最优值。
+
+\subsubsection{候选点筛选与求解过程}
+
+综合以上描述，完整的求解过程如下：
+
+\begin{enumerate}[label=\arabic*)]
+\item 根据 $S_1$、$\theta_1$ 构造接收约束代表点与源采样点。
+\item 枚举局部网格并检查接收与场地约束，得到备选检测位置。
+\item 遍历源采样点，以最大名义交会直径评价备选位置，剔除产生无界交集的点。
+\item 比较有限评价值，输出近似最优点及评价值，并按允许偏离比例筛选候选区域。
+\end{enumerate}
+
+若备选网格点数为 $M$、源采样数为 $N$，则双站直径计算的单次规模固定，主要计算量
+为 $O(MN)$。取允许偏离比例 $\varepsilon\ge0$，定义
+\begin{equation}\label{eq:p2-candidate}
+\widehat{\mathcal C}_{\varepsilon}
+=\{S_2\in\widehat{\mathcal A}_h:\widehat J(S_2)\le(1+\varepsilon)\widehat J_{\min}\}.
+\end{equation}
+候选面积以点数乘网格单元面积估计。$\varepsilon$ 用于放宽选点要求。
+
+\subsection{算例结果与候选区域分析}
+
+由于问题二并未指定首次观测的坐标与示向度，因此采用三个场景进行比较分析：A 
+为 $S_1=(0,900)$、$\theta_1=90^\circ$，B 为 $S_1=(1200,700)$、$\theta_1=120^\circ$，
+C 为 $S_1=(1500,900)$、$\theta_1=120^\circ$。三者分别对应沿半径朝外、斜穿圆域与近切向斜穿。
+所有结果均采用同一网格与干扰源采样密度。
+
+\begin{table}[H]
+\centering\small
+\caption{三场景的近似最优检测点与 $\varepsilon=5\%$ 候选规模}\label{tab:p2-best}
+\begin{tabular}{cccccc}
+\toprule
+场景 & 有限评价点数 & $\widehat J_{\min}$/m & 最优 $(x_2,y_2)$/m & 候选点数 & 面积/$10^4$ m$^2$\\
+\midrule
+A & 3740 & 47.83 & $(565.89,1578.84)$ & 94 & 3.17\\
+B & 2510 & 64.37 & $(307.83,1144.51)$ & 14 & 0.47\\
+C & 3215 & 22.67 & $(1123.87,1039.86)$ & 24 & 0.81\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+三场景通过接收约束筛选的点数分别为 $3870$、$2689$、$3318$，表\ref{tab:p2-best}
+仅统计其中具有有限评价值的点。A 场景关于首次观测射线对称，另一侧存在等价最优点，表
+中仅列一侧。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{\pTwoFigDir/p2_candidates.pdf}
+\caption{三场景的相对评价值与 $\varepsilon=5\%$ 候选区域。红线表示候选边界，星号表示一处网格最优点；颜色统一表示 $\widehat J/\widehat J_{\min}$，大于等于 $4$ 的值合并显示，空白处不参与有限值比较。}
+\label{fig:p2-candidates}
+\end{figure}
+
+由图\ref{fig:p2-candidates}可知，相同接收可行范围内的定位质量存在明显差异，通常较优
+的位置具有一定的侧向位移，能够改善首次方向难以确定的距离辨识问题；但前向位移与侧向位移需要联合选择，
+不能仅由交会角确定。场景 A 的候选区呈两侧对称分布，B、C 的近优区域则在所示条件下
+偏向场地内部一侧。
+
+取 $\varepsilon=5\%$ 时，三场景候选点占有限评价点的比重分别为 $2.51\%$、$0.56\%$
+、$0.75\%$，评价阈值为 $50.22$m、$67.59$m、$23.81$ m。这说明接收可行范围仍需进
+一步筛选。场景 C 的源可行距离较短，取得较小评价值；但三场景同时改变了位置和边界
+条件，不能据此推出普遍单调关系，也不能断言所有最优点均贴近场地边界。
+
+\subsection{参数影响与数值结果的适用范围}
+
+\subsubsection{允许偏离比例与候选规模}
+
+固定网格选取与源采样，分别对 $\varepsilon=2\%,5\%,10\%,20\%$ 进行筛选。由前文定义
+可知，$\varepsilon$ 增大时候选区域单调扩张。图\ref{fig:p2-tradeoff}同时展示候选
+面积与评价阈值，反映精度要求和选点灵活性之间的取舍。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{\pTwoFigDir/p2_tradeoff.pdf}
+\caption{允许偏离比例对候选规模与采样评价阈值的影响。折线连接四个离散计算结果，不表示已拟合连续函数关系。}
+\label{fig:p2-tradeoff}
+\end{figure}
+
+对与以上三个场景，$\varepsilon$ 从$5\%$ 增至 $10\%$ 时，面积估计的变化程度较大而评价阈值的
+变化并不明显，故可将 $5\%$ 作为本组算例的初始选择，再按实际情况进行调整。
+
+\subsubsection{源位置采样的局部核验}
+
+固定表\ref{tab:p2-best}选出的检测点，分别采用每条角域边界$50$、$100$、$200$点进行计算，并将角域内部
+均分为$21$个角度、每个角度$200$个距离点进行比较，每个检测点的评价值如下表所示
+
+\begin{table}[H]
+\centering
+\caption{固定所选检测点时的采样密度比较，单位：m}\label{tab:p2-sampling}
+\begin{tabular}{ccccc}
+\toprule
+场景 & 每条边各50点 & 每条边各100点 & 每条边各200点 & 区域内 $21\times200$ 点\\
+\midrule
+A & 47.7954 & 47.8261 & 48.0236 & 48.0236\\
+B & 64.3667 & 64.3667 & 64.3667 & 64.3667\\
+C & 22.6727 & 22.6727 & 22.6727 & 22.6727\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+加密采样后，场景 A 的评价值增加约 $0.41\%$，场景 B、C 基本不变，说明三个所选检测点
+的评价结果较为稳定，但仍需进一步检验整个候选区域。
+
+综上，本节通过接收条件筛选和定位效果比较，得到第二检测点的近优候选区域。该结果基于
+有限采样与简化测向模型，属于数值近似；后续可进一步完善测角误差与接收条件的处理，并
+在问题三、四中考虑移动耗时和路径选择。
 
 \section{模型的评价与推广}
 
