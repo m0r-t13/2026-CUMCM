@@ -1,0 +1,20 @@
+% 紧凑矢量流程图；只依赖 tikz 与 arrows.meta。
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small,
+  p3box/.style={draw,rounded corners=2pt,align=center,minimum height=0.63cm,inner sep=4pt},
+  p3arrow/.style={->,line width=0.55pt}]
+\node[p3box,text width=4.8cm] (start) at (0,0) {进入模拟器，原点扫描未知频道};
+\node[p3box,text width=4.8cm] (check) at (0,-0.95) {更新可行域、覆盖与清除状态};
+\node[p3box,text width=2.8cm] (end) at (4.7,-0.95) {退出并记录结果};
+\node[p3box,text width=4.8cm] (plan) at (0,-1.9) {补齐覆盖候选，联合规划开放路线};
+\node[p3box,text width=3.8cm] (scan) at (-1.7,-2.95) {覆盖节点：扫描未知频道};
+\node[p3box,text width=4.3cm] (act) at (3.3,-2.95) {源节点：测向／单点清除／扫清};
+\node[p3box,text width=4.8cm] (reuse) at (0,-4.0) {按条件复用位置，扫描或补测};
+\draw[p3arrow] (start)--(check);
+\draw[p3arrow] (check)--node[above,font=\footnotesize]{全部完成}(end);
+\draw[p3arrow] (check)--node[right,font=\footnotesize]{未完成}(plan);
+\draw[p3arrow] (plan.south)--++(0,-0.15)-|(scan.north);
+\draw[p3arrow] (plan.south)--++(0,-0.15)-|(act.north);
+\draw[p3arrow] (scan.south)--++(0,-0.17)-|(reuse.north);
+\draw[p3arrow] (act.south)--++(0,-0.17)-|(reuse.north);
+\draw[p3arrow] (reuse.west)--(-4.3,-4.0)--(-4.3,-0.95)--(check.west);
+\end{tikzpicture}
