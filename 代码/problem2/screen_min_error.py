@@ -82,7 +82,7 @@ def region_diameter(S1, th1, S2, th2, tol=1e-6):
     P = np.column_stack([x[feas], y[feas]])
     if len(P) < 2:
         return 0.0
-    d2 = ((P[:, None, :] - P[None, :, :])  2).sum(-1)
+    d2 = ((P[:, None, :] - P[None, :, :])  **2).sum(-1)
     return float(math.sqrt(d2.max()))
 
 
@@ -158,8 +158,8 @@ def solve_case(S1, th, na=130, nb=130, n_edge=100, verbose=True):
 
     ok = np.ones_like(A, dtype=bool)
     for V in Vc:
-        ok &= ((S2x - V[0])  2 + (S2y - V[1])  2) <= R_MIN  2
-    ok &= (S2x  2 + S2y  2) <= ARENA  2
+        ok &= ((S2x - V[0])  **2 + (S2y - V[1])  **2) <= R_MIN  **2
+    ok &= (S2x  **2 + S2y  **2) <= ARENA  **2
 
     D = np.full(A.shape, np.nan)
     idx = np.argwhere(ok)
