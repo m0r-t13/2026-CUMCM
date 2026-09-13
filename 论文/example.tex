@@ -72,9 +72,21 @@
 
 \begin{document}
 
- \maketitle
- \begin{abstract}
+\maketitle
+\begin{abstract}
 
+\textbf{针对问题一，}建立\textbf{考虑} $\pm 1^\circ$ \textbf{测向误差的半平面交会定位模型}，利用定位区域的凸性将区域
+直径计算转化为最远顶
+点对搜索，并采用\textbf{旋转卡壳算法}在线性时间内求解。在此基础上，证明同直径覆盖圆的圆心只能为最
+远点对中点，给出逐顶点覆盖判据。构造三次测向形成的等边三角形反例，得到区域直径为 $\textbf{20}$ \textbf{m}、最
+小覆盖圆直径约$\textbf{23.09}$ \textbf{m}，表明以区域直径为直径的圆\textbf{不一定能完全覆盖定位区域}。
+
+\textbf{针对问题二，}结合首次示向度、接收距离及场地边界筛选备选测点，以源位置采样下的
+最大名义交会直径为指标，建立\textbf{基于交会区域直径的测点选址优化模型。}
+通过网格搜索与角域边界采样求解
+，将评价值不超过网格最优值$1.05$倍的测点组成\textbf{近优候选区域。}沿半径朝外、斜穿圆域与
+近切向斜穿三个算例的最优采样评价值分别为$\textbf{47.83}$、$\textbf{64.37}$和$\textbf{22.67}$ \textbf{m}；固定所选测点
+加密源采样后，评价值最大变化约$\textbf{0.41\%}$。
 
 \keywords{无创产前检测\quad  混合效应模型\quad   优化模型\quad  Z值判定\quad 染色体异常筛查}
 \end{abstract}
@@ -171,6 +183,19 @@
 比例与平均定位清除时间对策略进行评价。
 
 \subsection{问题四的分析}
+
+问题四在问题三的基础上引入了部分定向干扰源，其发射朝向未知。显然，此时即使检测点
+已经在干扰源的有效接收半径内，也有可能因为不在定向干扰源的覆盖方向上而接收不到信
+号。因此，本问的关键在于如何平衡距离与朝向问题，调整搜索覆盖、观测信息的利用及下
+一检测点的选择策略。
+
+针对定向干扰源朝向未知的情况，我们可以重新对搜索点进行布局，利用三角剖分及凸包的
+性质，保证任意朝向的干扰源都能被成功检测。对于成功测向得到的角域及距离约束，我们
+依然可以沿用问题三的思路，但显然不能再利用无信号检测的结果来推断距离；取而代之的
+是从最近的成功检测点出发，向左右进行探索，并在双侧失败时缩短探索步长。
+
+最后，沿用最小包围圈与局部覆盖清除的方法，通过位置复用与动态路线规划尽可能减少移
+动耗时，并利用模拟器检验策略结果。
 
 \section{模型假设}
 
@@ -1036,10 +1061,8 @@ $1200$米，则扫描未知频道并将该位置加入覆盖点集合。其次�
 \end{minipage}
 \end{table}
 
-
-
 \textbf{正常提交结果的分析。}
-测试$1、2$分别清除$16$个和$12$个干扰源，平均定位清除时间分别为$194.58$ s和$267.52$ s，
+测试$1$、$2$分别清除$16$个和$12$个干扰源，平均定位清除时间分别为$194.58$ s和$267.52$ s，
 任务总虚拟时间分别约为
 $3113.28$ s和$3210.24$ s。第二次的平均时间比第一次高$37.49$\%，而总虚拟时间仅增加约
 $3.11$\%，说明平均时间的差异同时受到任务总耗时和已清除源数量的影响，不能仅凭该指标
@@ -1053,7 +1076,150 @@ $3.11$\%，说明平均时间的差异同时受到任务总耗时和已清除源
 
 \section{问题四模型的建立与求解}
 
-\subsection{}
+在问题三中，我们已经建立了如何对全向源进行覆盖搜索、角域交会以及滚动调度的全套方法，本问在保留
+前问的任务状态及总虚拟时间目标的前提下，重点对依赖干扰源全向辐射作为前提条件的环节进行优化：以任意
+朝向下的覆盖代替距离覆盖，放弃由无信号推断源的距离，并以成功测向点为起点展开后续探究。
+
+\subsection{适应任意朝向的搜索网构造}
+
+记目标圆域为 $\Omega$，定向源位置为 $G$，发射方向的单位向量为 $n_\varphi=(\cos\varphi,\sin\varphi)$。
+由于定向干扰源的有效覆盖范围是 $180^\circ$ ，包含边界，则其方向条件可表示为如下闭半平面
+
+\begin{equation}\label{eq:p4-halfplane}
+H(G,\varphi)=\{S:n_\varphi^{\mathsf T}(S-G)\ge0\}.
+\end{equation}
+
+因此，本问搜索点集在满足问题三距离条件的同时，还需满足以上方向条件，即
+
+\begin{equation}\label{eq:p4-cover}
+\forall G\in\Omega,\ \forall\varphi\in[0,2\pi),\quad
+\exists S\in\mathcal S:\quad \|S-G\|_2<1000,\quad S\in H(G,\varphi).
+\end{equation}
+
+显然，假设一位于场地最东侧且向东发射的干扰源，显然仅靠问题三提出的图\ref{fig:p3-coverage}的布设
+无法检测到该源。为此，本问设置了内外双圈搜索点，允许机器狗在目标区域外进行检测。
+
+\textbf{搜索点布局。}取圆心 $O=(0,0)$、内环半径 $r=950$ m， 外环半径 $R_o=1800/\cos15^\circ$，
+构造
+
+\begin{equation}\label{eq:p4-points}
+\begin{aligned}
+I_j&=r\bigl(\cos(30j^\circ),\sin(30j^\circ)\bigr),\\
+E_j&=R_o\bigl(\cos((15+30j)^\circ),\sin((15+30j)^\circ)\bigr),
+\qquad j=0,\ldots,11.
+\end{aligned}
+\end{equation}
+
+此时搜索点集 $\mathcal S=\{O,I_0,\ldots,I_{11},E_0,\ldots,E_{11}\}$ 内共有 $25$ 个
+点，内外环错开 $15^\circ$ ，其正十二边形的内切圆恰为场地圆，包含整个 $\Omega$ ，具体布局及
+三角剖分见图\ref{fig:p4-coverage}。
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1.42cm,y=1.42cm,font=\small,>=Latex]
+\definecolor{p4blue}{RGB}{46,111,164}
+\definecolor{p4red}{RGB}{176,55,45}
+\pgfmathsetmacro{\pFourOuter}{1.8/cos(15)}
+\coordinate (O) at (0,0);
+\foreach \j in {0,...,11}{
+  \coordinate (I\j) at ({30*\j}:0.95);
+  \coordinate (E\j) at ({15+30*\j}:\pFourOuter);
+}
+\fill[p4blue!5] (E0)--(E1)--(E2)--(E3)--(E4)--(E5)--(E6)--(E7)--(E8)--(E9)--(E10)--(E11)--cycle;
+\fill[p4red!16] (I0)--(I1)--(E0)--cycle;
+\foreach \j in {0,...,11}{
+  \pgfmathtruncatemacro{\jn}{mod(\j+1,12)}
+  \draw[p4blue!65,line width=0.4pt] (O)--(I\j)--(I\jn)--(E\j)--(I\j);
+  \draw[p4blue,line width=0.7pt] (E\j)--(E\jn);
+}
+\draw[black,line width=0.95pt] (O) circle[radius=1.8];
+\foreach \j in {0,...,11}{
+  \fill[p4blue] (I\j) circle[radius=0.032];
+  \fill[p4blue] (E\j) ++(-0.029,-0.029) rectangle ++(0.058,0.058);
+}
+\fill[black] (O) circle[radius=0.033];
+\node[above left,inner sep=2pt] at (O) {$O$};
+\node[below left,inner sep=2pt] at (I0) {$I_0$};
+\node[above left,inner sep=2pt] at (I1) {$I_1$};
+\node[above right,inner sep=2pt] at (E0) {$E_0$};
+\node[below right,inner sep=2pt] at (E11) {$E_{11}$};
+\coordinate (G) at (1.21,0.31);
+\fill[p4red] (G) circle[radius=0.036];
+\node[below,inner sep=1pt,text=p4red] at (G) {$G$};
+\draw[->,black!60,line width=0.45pt] (O)--(225:1.8)
+ node[pos=.68,sloped,above,fill=white,inner sep=1pt,font=\footnotesize] {$1800\,\mathrm m$};
+\draw[<->,black!60,line width=0.45pt] (O)--(I9)
+ node[midway,right,fill=white,inner sep=1pt,font=\footnotesize] {$950\,\mathrm m$};
+\draw[black,line width=.95pt] (2.22,1.48)--(2.56,1.48);
+\node[anchor=west] at (2.67,1.48) {目标圆域边界};
+\fill[p4blue] (2.39,1.06) circle[radius=.033];
+\node[anchor=west] at (2.67,1.06) {内环12点，半径950 m};
+\fill[p4blue] (2.36,.61) rectangle (2.42,.67);
+\node[anchor=west] at (2.67,.64) {外环12点，半径约1863.50 m};
+\draw[p4blue!65,line width=.5pt] (2.22,.22)--(2.56,.22);
+\node[anchor=west] at (2.67,.22) {36个三角形的剖分边};
+\node[anchor=north west,align=left,inner sep=0pt] at (2.22,-.27)
+ {外十二边形包含整个目标圆\\[3pt]
+  最大剖分边长约977.303 m};
+\node[anchor=north west,align=left,inner sep=0pt,text=p4red] at (2.22,-1.34)
+ {$G\in\operatorname{conv}\{I_0,I_1,E_0\}$\\[3pt]
+  任意有效半平面至少包含一个顶点};
+\end{tikzpicture}
+\caption{25点搜索网及三角剖分。黑色圆为场地边界，蓝色点和方点分别为内、外环站；阴影三角形示意源与邻近搜索点的凸包关系，连线表示剖分边而非行走路线。}
+\label{fig:p4-coverage}
+\end{figure}
+
+\textbf{覆盖保证的证明。}按图\ref{fig:p4-coverage}对上述$25$个点进行连接，得到
+
+\[
+\triangle OI_jI_{j+1},\qquad
+\triangle I_jI_{j+1}E_j,\qquad
+\triangle E_{j-1}E_jI_j,\quad j=0,\ldots,11.
+\]
+
+其中前 $12$ 个三角形铺满内十二边形，后两类，即内外圈之间的 $24$ 个三角形铺满剩余区域
+其边长只有以下四类：
+
+\begin{equation}\label{eq:p4-edges}
+\begin{aligned}
+\ell_1&=r=950,&\ell_2&=2r\sin15^\circ\approx491.756,\\
+\ell_3&=2R_o\sin15^\circ\approx964.617,&
+\ell_4&=\sqrt{r^2+R_o^2-2rR_o\cos15^\circ}\approx977.303.
+\end{aligned}
+\end{equation}
+
+因此最大剖分边长为 $\ell_{\max}\approx977.303<1000$ m。说明对任意 $G\in\Omega$，任取
+一包含它的三角形，其到三角形任一顶点距离的最大值都不会超过 $\ell_{\max}$，即满足距离条件。
+
+再考察任意发射方向 $n_\varphi$。若三个顶点均位于无效侧，根据式\eqref{eq:p4-halfplane}，有
+$n_\varphi^{\mathsf T}(A_i-G)<0$。将三式按 $\lambda_i$ 加权相加，得
+
+\[
+0=n_\varphi^{\mathsf T}\!\left(\sum_{i=1}^3\lambda_iA_i-G\right)<0,
+\]
+
+显然上式是矛盾的。因此三角形区域三个顶点至少有一个能满足方向条件，显然该点即为满足式\eqref{eq:p4-cover}
+针对该源的可行检测点。
+
+频道搜索的逻辑与问题三是基本相同的，在原点及内外圈搜索站依次扫描尚未发现的频道。在完成25点搜索
+后，将始终未出现信号的频道设置为空；若已发现 $16$ 个不同频道，则可提前终止频道搜索。与问题三
+不同的是，本问不采用动态补齐接收圆的覆盖，而是只保留固定搜索网，不使用未经方向覆盖验证的临时
+测点替换它。
+
+\subsection{观测约束与无信号反馈的修正}
+
+对观测成功并返回示向度的检测点，仍可按7.3节的办法，将本次角域与历史可行域、$1500$m接收上界
+及近距排除平面相交。接收圆盘与场地仍使用正多边形进行近似，使满足误差界的真实源位置保留在可行域内。
+返回近距信息时，直接在当前点清除即可。
+
+需要进行改进的是第7.3节提出的当得到有信号点 $S$ 与无信号点 $N$ 时的距离比较：第四问题设下
+显然不能推出未知源 $G$ 总是离有信号点 $S$ 更近的结论。因为无信号点的产生也可能是因为观测点
+恰好不在定向干扰源的有效覆盖范围内。因此本问在收到无信号时保持位置可行域不变，转而对探测
+测向与步长进行调整。
+
+\subsection{以成功观测为参照的左右探测}
+
+
 
 \section{模型的评价与推广}
 
