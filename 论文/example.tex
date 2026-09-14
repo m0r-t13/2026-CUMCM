@@ -55,7 +55,7 @@
 \usepackage{array}
 \usepackage{url}   % 网页链接
 \usepackage{subcaption} % 子标题
-\title{基于混合效应模型的NIPT时点优化与胎儿异常判定}
+\title{基于覆盖搜索与滚动调度的无线电干扰源自主定位与清除}
 
 %%=======如下信息已经不再需要填写========
 \tihao{B}
@@ -88,7 +88,28 @@
 近切向斜穿三个算例的最优采样评价值分别为$\textbf{47.83}$、$\textbf{64.37}$和$\textbf{22.67}$ \textbf{m}；固定所选测点
 加密源采样后，评价值最大变化约$\textbf{0.41\%}$。
 
-\keywords{无创产前检测\quad  混合效应模型\quad   优化模型\quad  Z值判定\quad 染色体异常筛查}
+\textbf{针对问题三，}面向数量未知的全向干扰源，建立\textbf{覆盖搜索与滚动调度
+模型}。以圆心和六个外圈点构造七点覆盖结构，其覆盖半径约为992.689~m，小于1000~m
+的接收半径下限。融合历史测向、接收距离与无信号约束持续更新源位置可行域，通过
+\textbf{粗细网格搜索}兼顾测后区域缩减与行动耗时。利用\textbf{最小包围圆与
+局部网格}分别制定单点清除和局部扫清方案，将搜索点与源区域纳入联合路线，并以
+最近邻和2-opt算法优化访问顺序。每轮仅执行首个任务，再根据新观测滚动规划，并通
+过测点复用减少重复移动。采用本问程序的正式测试累计清除\textbf{28个源}，清
+除率均为\textbf{100\%}，
+平均定位清除时间按源数加权后为\textbf{225.84~s/源}。
+
+\textbf{针对问题四，}面向全向源与$180^\circ$定向源混合场景，构造
+\textbf{25点双环三角覆盖网}。通过三角剖分证明该点集满足任意发射朝向
+下的覆盖要求，最大剖分边长约977.303~m，小于1000~m的接收半径下限。以
+最近成功测向点为参照开展\textbf{左右探测与自适应缩步}，双侧无信号时
+保留原位置可行域并将步长减半，避免因方向受限而错误排除可能源位置。结
+合最小包围圆判据、局部网格扫清与最小二乘估计点试探清除，动态选择清除方
+式；通过同点补测与搜索清除联合调度复用观测位置，在少源场景采用
+\textbf{动态规划}优化访问顺序。三次正式测试累计清除\textbf{35个源}，清
+除率均为\textbf{100\%}，平均定位清除时间分别为670.35、628.98和377.16~s，
+按源数加权后为\textbf{532.88~s/源}。
+
+\keywords{滚动调度\quad  覆盖搜索\quad   角域交会定位\quad  旋转卡壳算法\quad 网格搜索}
 \end{abstract}
 
 %\tableofcontents
@@ -192,7 +213,7 @@
 针对定向干扰源朝向未知的情况，我们可以重新对搜索点进行布局，利用三角剖分及凸包的
 性质，保证任意朝向的干扰源都能被成功检测。对于成功测向得到的角域及距离约束，我们
 依然可以沿用问题三的思路，但显然不能再利用无信号检测的结果来推断距离；取而代之的
-是从最近的成功检测点出发，向左右进行探索，并在双侧失败时缩短探索步长。
+是从最近的成功检测点出发，向左右进行探索，并在双侧失败时缩短探索步长。\textsuperscript{[1]}（AI润色，2026-09-12）
 
 最后，沿用最小包围圈与局部覆盖清除的方法，通过位置复用与动态路线规划尽可能减少移
 动耗时，并利用模拟器检验策略结果。
@@ -201,10 +222,12 @@
 
 为简化问题，本文做出以下假设：
 
-\begin{enumerate}[leftmargin=1.6cm]
-    \item 
-    \item 
-    \item 
+\begin{enumerate}[leftmargin=1.3cm]
+    \item 将目标分布区域视为圆平面建立模型，忽略地形起伏。
+    \item 将干扰源、机械狗视为质点进行模型建立与分析。
+    \item 不对示向度误差作概率分布假设，一律按最坏情况（误差取到边界）处理。
+    \item 机械狗执行任务中，除机器狗移动时间、频道切换时间、检测时间、光学精确定位时
+    间、清除时间外，其它事件消耗时间（如程序运行时间、机械狗调整姿态时间）忽略不计。
 \end{enumerate}
 
 \newpage
@@ -213,35 +236,40 @@
 
 \begin{table}[htbp]
   \centering
-
-  \renewcommand{\arraystretch}{1.35}
+  \renewcommand{\arraystretch}{1.25}
   \setlength{\tabcolsep}{8pt}
-
   \begin{tabularx}{\textwidth}{
-    >{\centering\arraybackslash}p{0.25\textwidth}
+    >{\centering\arraybackslash}p{0.28\textwidth}
     >{\centering\arraybackslash}X
-    >{\centering\arraybackslash}p{0.20\textwidth}
+    >{\centering\arraybackslash}p{0.12\textwidth}
   }
     \toprule
     符号 & 说明 & 单位 \\
     \midrule
-
-    $FF$                    & 胎儿 Y 染色体浓度       & --          \\
-    $GA$                    & 孕周                    & 周          \\
-    $BMI$                   & 身体质量指数            & $\mathrm{kg/m^2}$ \\
-    $y$                     & $\operatorname{logit}(FF)$ & --       \\
-    $\beta_0,\beta_1,\ldots$ & 固定效应系数           & --          \\
-    $u_i,b_i$               & 随机效应                & --          \\
-    $\sigma^2$              & 方差                    & --          \\
-    $p(t,b)$                & 达标概率                & --          \\
-    $\theta$                & 浓度阈值（0.04）         & --          \\
-    $T_{\ast}(b)$           & 最早达标时间            & 周          \\
-    $\kappa$                & 误差放缩因子            & --          \\
-    $r_{\mathrm{fail}}$     & 检测失败风险            & --          \\
-    $\phi(t)$               & 临床时间风险            & --          \\
-    $Z$                     & $Z$ 值                  & --          \\
-    $q$                     & FDR 校正后的 $q$ 值     & --          \\
-
+    $\Omega$ & 目标圆域 & -- \\
+    $G$ & 干扰源位置 & $\mathrm{m}$ \\
+    $S_i$ & 第 $i$ 个检测点坐标 & $\mathrm{m}$ \\
+    $\theta_i$ & 第 $i$ 次测向的示向度 & ${}^\circ$ \\
+    $\alpha$ & 测向误差界，取 $1^\circ$ & ${}^\circ$ \\
+    $W(S,\theta)$ & 测向误差角域 & -- \\
+    $P_k,\ P_{c,k}$ & 单源及频道 $c$ 的定位可行域 & -- \\
+    $D(P)$ & 定位区域直径 & $\mathrm{m}$ \\
+    $\widehat J(S_2)$ & 第二检测点评价值 & $\mathrm{m}$ \\
+    $\widehat{\mathcal C}_{\varepsilon}$
+      & 允许偏离比例为 $\varepsilon$ 的近优候选集 & -- \\
+    $R_{\mathrm{cov}}$ & 搜索点集的场地覆盖半径 & $\mathrm{m}$ \\
+    $O_c,\ r_c$ & 源可行域最小包围圆的圆心与半径 & $\mathrm{m}$ \\
+    $\widehat T_c(q)$ & 候选测点 $q$ 的时间评分 & $\mathrm{s}$ \\
+        $k,\ h$ & 有效测向次数与多边形顶点数 & -- \\
+    $R_c$ & 频道 $c$ 的源有效接收半径 & $\mathrm{m}$ \\
+    $\mathcal T$ & 首次观测后的源位置可行域 & -- \\
+    $X_t$ & 当前机器狗位置 & $\mathrm{m}$ \\
+    $\widehat D_c(q)$ & 候选测点的预测最大定位直径 & $\mathrm{m}$ \\
+    $Q_{\pm}(s)$ & 缩放系数为 $s$ 的左右探测点 & $\mathrm{m}$ \\
+    $\widehat G_c$ & 源位置的最小二乘估计 & $\mathrm{m}$ \\
+    $\rho_{\mathrm{clear}}$ & 干扰源清除比例 & -- \\
+    $T$ & 任务总虚拟耗时 & $\mathrm{s}$ \\
+    $\overline T$ & 平均定位清除时间 & $\mathrm{s}$/源 \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -662,7 +690,7 @@ S_2:
 着定位区域也足够的小。不难发现，当两观测方向接近时，角域的交集往往十分狭长；在适当
 地向侧向移动后，交会区域狭长的几何形状能够得到改善，但实际效果还与观测距离有关。
 因此，本问沿用问题一的区域直径作为选点的核心指标。图\ref{fig:p2-geometry}给出了
-干扰源可行域与检测点筛选的示例。
+干扰源可行域与检测点筛选的示例。\textsuperscript{[2]}（AI优化绘图，2026-09-11）
 
 \begin{figure}[H]
 \centering
@@ -1219,79 +1247,266 @@ $n_\varphi^{\mathsf T}(A_i-G)<0$。将三式按 $\lambda_i$ 加权相加，得
 
 \subsection{以成功观测为参照的左右探测}
 
+由于本问存在定向干扰源，因此采用问题三7.4节的候选点筛选仅能保证到所有可能源距离不超过 $1000$
+米，这一条件在本题并不能据此保证获得新的示向度。为适应定向源的未知朝向，可以改用如下方法：
 
+从最近一次成功测向位置 $S$ 构造局部探测点，记示向度为 $\theta$，令
+
+\[
+u=(\cos\theta,\sin\theta),\qquad v=(-\sin\theta,\cos\theta),\qquad
+d_f=u^{\mathsf T}(O_c-S),
+\]
+
+其中 $O_c$ 为当前可行域最小包围圆的圆心；$u$ 是测点指向源的估计方向。设置自适应步长及左右候选点
+
+\begin{equation}\label{eq:p4-probe}
+\begin{aligned}
+f_0&=\min\{180,\max\{40,0.55\max(d_f,0)\}\},\\
+b_0&=\min\{30,\max\{12,0.18f_0\}\},\\
+Q_\pm(s)&=S+s f_0u\pm s b_0v,\qquad
+s\in\{1,1/2,\ldots,1/64\}.
+\end{aligned}
+\end{equation}
+
+这其中前向移动用于接近源，侧向横移用于形成新的交会区间。在源区域较近时可以缩短前进量 $s$，
+以减少候选探测点越过源进入无信号侧的次数。
+
+每轮局部探测从 $s=1$ 开始，按 $Q_+$、$Q_-$ 的顺序依次尝试，当任一点成功时，根据
+该点更新可行域和参考位置，并对清除条件重新进行检查；若返回近距信息则直接清除。双侧
+均无信号时，显然此时的前进量 $s$ 过大，令 $s\leftarrow s/2$ ，重新构造候选点。重复
+这一过程直到出现成功测向点。
+
+\subsection{清除判据与局部动作的调整}
+
+由于定向源光学清除不受方向影响，因此7.5小节最小包围圆半径 $r_c\le19$ m时的单点清除结论保持不变。
+对细长可行域，改以该域直径两端点为主轴构造包围矩形，将两边等分，使得每个单元边长不超过
+$26$ m。此时任一点到所在单元中心的距离满足
+
+\begin{equation}\label{eq:p4-grid}
+\frac12\sqrt{d_u^2+d_v^2}\le\frac{26}{\sqrt2}\approx18.385<20\ \mathrm m.
+\end{equation}
+
+因此，以最短遍历路线逐个遍历网格中心即可覆盖此细长可行域。
+
+当定位范围虽然较小，却无法保证一次清除成功时，可以用最小二乘估计给出干扰源最可能出现的位置，即
+
+\begin{equation}\label{eq:p4-ls}
+\widehat G_c=\arg\min_X\sum_i\bigl[n_i^{\mathsf T}(X-S_i)\bigr]^2.
+\end{equation}
+
+只有当 $r_c\le70$ m且 $\|\widehat G_c-O_c\|\le\max\{80,1.8r_c\}$，即当前最小包围圆
+不太大且估计点不离包围圆心太远时，机器狗才会前往该点尝试清除。设计此机制的目的是通过一次
+可能成功的清除尝试，争取节省一些测向与移动时间。即使试探失败，当前可行域也会被保留下来。
+
+\subsection{搜索清除联合调度与少源路线优化}
+
+沿用7.6节的位置复用与滚动规划思想，并可将执行过程分为两个阶段。阶段A对未知频道进行 $25$
+点的覆盖搜索，在搜索站补测已知源，并加入可单点清除、可网格扫清的干扰源重新规划剩余路线；
+需专门定位的源仍依靠顺测积累信息。阶段B则是在搜索结束后，对尚未清除的源进行专门探测与清除。
+
+\textbf{同点补测。}为尽量减少机器狗的移动距离，可以通过额外观测尽可能缩小可行域的大小。以
+当前最小包围圆的圆心为预测点，计算假设测向成功后的半径 $\widehat r_c(q)$，用
+$g_c(q)=1-\widehat r_c(q)/r_c$ 来衡量缩小幅度。只有在半径缩小至少 $10$\%时予以测量，
+预计可直接达到 $19$ m时优先保留。每个搜索站最多补测 $4$ 个频道。
+
+\textbf{混合路线。}与问题三相同，对已经确定的搜索站、单点清除及网格清除任务，采用多起点最
+近邻与2-opt生成动态最短路线；对尚需定位的源，用式\eqref{eq:p4-ls}给出的预测位置辅助评分：
+
+\begin{equation}\label{eq:p4-route}
+J(\pi)=L(\pi)+0.12\sum_c\min\{700,d(\widehat G_c,\pi)\},
+\end{equation}
+
+其中 $d(\widehat G_c,\pi)$ 为从当前位置到预测点路线的最短距离。考虑到预测位置的不准确性，
+设定该试图靠近预测源的绕路路线不能多走超过 $120$ m，否则将退回原线路。
+
+\textbf{少源阶段的进一步优化。}阶段B以各源的清除圆心、网格首点或探测候选点作为路线代表点。
+当确认总源数为10至13时，每次停靠最多顺测另外2个高收益频道，以避免在 $15$ m内重复尝试同一频道。
+采用动态规划优化访问顺序,其余场景沿用常规策略。
+
+\subsection{算法流程与有效性检验}
+
+图\ref{fig:p4-flow}给出了对以上两阶段控制及单源反馈流程的总结。
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small,
+ p4box/.style={draw,rounded corners=2pt,align=center,text width=5.4cm,minimum height=.66cm,inner sep=4pt},
+ p4arr/.style={->,line width=.55pt},
+ p4label/.style={font=\footnotesize,fill=white,inner sep=1.5pt}]
+\node[font=\small\bfseries] at (0,1.5) {阶段A：保证搜索与顺路清除};
+\node[font=\small\bfseries] at (7.3,1.5) {阶段B：剩余源定位与清除};
+\node[p4box] (start) at (0,0) {进入，原点扫描未知频道};
+\node[p4box] (plan) at (0,-1.13) {重排剩余搜索站与可清除任务};
+\node[p4box] (act) at (0,-2.26) {执行首任务：扫描或覆盖清除\\搜索站按收益原地补测};
+\node[p4box] (check) at (0,-3.6) {更新状态：发现16源\\或已完成25点搜索？};
+\node[p4box] (mode) at (0,-4.92) {剩余频道判空，确认源数\\11至15源启用少源优化};
+\node[p4box] (choose) at (7.3,0) {规划代表点路线，选择未清除源};
+\node[p4box] (clear) at (7.3,-1.13) {依次检查：MEC、网格、试探清除};
+\node[p4box] (probe) at (7.3,-2.26) {从成功点左右探测\\双侧无信号则缩步重试};
+\node[p4box] (feedback) at (7.3,-3.6) {更新可行域及最近成功测向点};
+\node[p4box] (end) at (7.3,-4.92) {全部清除后统计并退出};
+\draw[p4arr] (start)--(plan);
+\draw[p4arr] (plan)--(act);
+\draw[p4arr] (act)--(check);
+\draw[p4arr] (check)--node[p4label,right]{是}(mode);
+\draw[p4arr] (check.west)--(-3.18,-3.6)--(-3.18,-1.13)--node[p4label,above]{否}(plan.west);
+\draw[p4arr] (mode.east)--(3.66,-4.92)--(3.66,0)--(choose.west);
+\draw[p4arr] (choose)--(clear);
+\draw[p4arr] (clear)--(probe);
+\draw[p4arr] (probe)--node[p4label,right]{获得示向}(feedback);
+\draw[p4arr] (feedback.east)--(10.6,-3.6)--(10.6,-1.13)--(clear.east);
+\node[p4label,rotate=90] at (10.95,-2.62) {依据反馈继续处理当前源};
+\draw[p4arr] (clear.east)--(11.25,-1.13)--(11.25,.98)--(7.3,.98)--(choose.north);
+\node[p4label] at (9.0,.98) {清除成功，选择下一源};
+\draw[p4arr] (choose.west)--(4.18,0)--(4.18,-4.92)--(end.west);
+\node[p4label,rotate=90] at (4.18,-2.4) {无剩余源};
+\end{tikzpicture}
+\caption{问题四核心流程。左侧为搜索与顺路清除，右侧为剩余源处理；无信号仅改变探测安排，不直接裁剪位置可行域。}
+\label{fig:p4-flow}
+\end{figure}
+
+按照题目要求完成三次正式测试，沿用式\eqref{eq:p3-metrics}计算清除比例与平均定位清除
+时间，结果见表\ref{tab:p4-official}。
+
+\begin{table}[H]
+\centering
+\caption{问题4正式测试结果}
+\label{tab:p4-official}
+\small
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|*{4}{>{\centering\arraybackslash}X|}}
+\hline
+测试案例编码 & 清除干扰源个数 & 平均定位清除时间/s & 程序运行时间/s \\
+\hline
+测试1 & 10 & 670.35 & 4 \\
+\hline
+测试2 & 10 & 628.98 & 2 \\
+\hline
+测试3 & 15 & 377.16 & 3 \\
+\hline
+\end{tabularx}
+\end{table}
+
+\textbf{清除效果。}
+三次测试分别清除10、10和15个干扰源，均与对应案例的干扰源总数一致，清除比例均为100\%。
+结果表明，在这三个全向与定向源混合案例中，所设计的搜索、定位及清除策略均完成了全部目标的处理，
+验证了算法在所测场景下的有效性。
+
+\textbf{定位清除时间。}
+三次测试的总虚拟时间分别为6703.577、6289.868和5657.457 s。
+测试1、2的源数量相同，但测试2的总耗时比测试1减少6.17\%，说明源数量不是决定任务耗时的唯一因素，
+源的位置、接收范围及定向覆盖条件也会影响搜索与定位过程。
+测试3虽然需要清除15个源，其总耗时却比测试2减少10.05\%，平均定位清除时间降低40.04\%。
+这一差异既包含总耗时的减少，也受到清除数量增加的影响，不能仅凭平均时间下降便认定某项优化取得了同等幅度的收益。
+
+\textbf{运行效率与综合评价。}
+三次测试累计清除35个干扰源，
+按清除数量加权的平均定位清除时间为532.88 s/源。
+因此，后续改进应重点关注机器狗的移动、检测及无信号探测等虚拟动作成本。
+上述结果支持策略在已测试案例中的可行性，但不同案例条件并不相同，
+各优化环节的独立节时效果仍需结合动作日志或对照测试进一步判断。
 
 \section{模型的评价与推广}
 
 \subsection{模型的优点}
 
 \begin{enumerate}[leftmargin=1.45cm]
-    \item 
-    \item 
-    \item 
+    \item \textbf{模型具有较强的理论性与可解释性。}本文将测向误差转化为半平面约束，通过多
+    个角域交集刻画干扰源位置可行域，并利用凸多边形性质、旋转卡壳算法和最小包围圆
+    完成区域直径计算与清除判定。各步骤均具有明确的几何意义，避免了仅以区域直径衡
+    量覆盖范围可能产生的误判，提高了定位结果的可靠性。
+    \item \textbf{模型形成了较完整的动态决策体系。}模型并未将搜索、定位与清除相互割裂，而是以
+    干扰源可行域为核心，根据实时观测不断更新状态，并综合考虑移动、测向和后续处理成本
+    选择下一检测点。同时将覆盖节点与已发现干扰源统一进行路线规划，每次执行后重新决策
+    ，从而提高检测位置的复用率并减少不必要的移动路程。
+    \item \textbf{对全向与定向干扰源均具有较好的适应性。}针对全向源，模型利用最小接收距
+    离构造覆盖搜索结构，保证未知干扰源能够被发现；针对定向源，则构造内外双圈搜索
+    网，并借助三角剖分和凸组合性质保证不同发射方向下仍存在有效检测点。同时取消不
+    再适用的无信号距离推断，使模型能够适应全向、定向干扰源共存的复杂情况。
 \end{enumerate}
 
 \subsection{模型的不足}
 
 \begin{enumerate}[leftmargin=1.45cm]
-    \item 
-    \item 
-    \item 
+    \item \textbf{部分优化结果仍依赖离散化近似。}第二检测点选址以及主动测向位置的确定
+    主要采用网格搜索和有限源位置采样，因此得到的是当前离散精度下的近似最优解，
+    而非连续空间中的严格全局最优。虽然通过加密源位置采样验证了部分算例结果的
+    稳定性，但仍可能存在网格未覆盖的更优检测位置或未被采样捕获的最不利情况。
+    \item \textbf{部分参数的选取具有一定经验性。}模型中的粗细网格步长、近优点筛选比例、
+    主动测向评分权重以及局部扫清阈值等参数，主要依据几何特征和模拟实验进行设定
+    。该方法在当前测试条件下具有较好的计算效率，但当场地规模、机器狗速度、测向
+    精度或干扰源分布发生明显变化时，原有参数未必仍能保持较优性能。
+    \item \textbf{模型对真实无线电传播环境进行了简化。}本文主要依据题目给出的测
+    向误差、接收半径和定向源覆盖角度建立模型，将接收范围近似为规则几何
+    区域。实际环境中可能存在建筑遮挡、多径传播、信号衰减和地形限制等因素
+    ，使有效接收区域偏离理想模型。因此，当前方法更适用于题设条件明确的场
+    景，实际应用时仍需结合环境数据进行修正。
 \end{enumerate}
 
 \subsection{模型的推广与应用}
 
-\begin{enumerate}[leftmargin=1.45cm]
-    \item 
-    \item 
-    \item 
-\end{enumerate}
+本文模型可进一步推广至复杂场地和多智能体协同定位场景。对于存在障碍物或不规则边界的区
+域，可将目标区域划分为若干子区域，并以实际可行路径替代欧氏距离完成覆盖与路线规划；在
+大范围搜索任务中，可采用多台机器狗或无人机协同完成不同区域及不同干扰源的定位。同时
+，还可将固定的测向误差角域推广为概率分布或置信区域，并结合贝叶斯更新、鲁棒优化或信息
+增益评价动态选择检测位置，从而提高模型对测量噪声、传播环境变化及复杂实际场景的适应能力。
 
-\CumcmAIUsed{[简要用途, 如语言润色, 代码调试等]}
-
-
-\section*{AI工具使用详情}
-
-\subsection*{工具信息}
-\noindent
-\begin{tabularx}{\textwidth}{@{}XX@{}}
-  \toprule
-  项目 & 填写内容 \\
-  \midrule
-  工具名称 & \textit{填写实际使用的产品或工具名称} \\
-  版本或型号 & \textit{填写实际版本、模型名称或可识别的型号} \\
-  使用日期 & \textit{YYYY-MM-DD 至 YYYY-MM-DD} \\
-  \bottomrule
-\end{tabularx}
-
-\subsection*{具体使用目的和环节}
-逐项说明 AI 用于语言润色、代码调试、资料整理或其他环节；不得笼统写“辅助论文”。明确其输入、输出及对应论文位置。
-
-\subsection*{主要提示方式与使用过程}
-说明主要提示策略与迭代过程，可附具有代表性的交互片段。不要包含参赛者姓名、学校或赛区信息。
-
-\subsection*{采纳、人工修改与核验}
-除语言润色外，逐项记录 AI 输出是否采纳、由谁进行何种人工修改、采用何种数据或实验复核，以及最终结论是否发生变化。
-
-\subsection*{人工核验清单}
-\begin{enumerate}[label=\arabic*)]
-  \item 核对公式推导、单位、边界条件和符号一致性；
-  \item 在独立环境中运行全部代码并复现论文表图；
-  \item 核验引用、数据来源和事实陈述；
-  \item 确认核心建模与分析由参赛队主导；
-  \item 确认论文声明与本详情文件一致。
-\end{enumerate}
+\CumcmAIUsed{语言润色、代码调试、辅助绘图}
 
 
 %参考文献
-\begin{thebibliography}{9}%宽度9
-    \bibitem[1]{liuhaiyang2013latex}
-    刘海洋.
-    \newblock \LaTeX {}入门\allowbreak[J].
-    \newblock 电子工业出版社, 北京, 2013.
-    \bibitem[2]{mathematical-modeling}
-    全国大学生数学建模竞赛论文格式规范 (2023 年 修改).
-    \bibitem{3} \url{https://www.latexstudio.net}
+\begin{thebibliography}{9}
+
+\bibitem{jakkala2026planning}
+Jakkala K, Akella S.
+Fully differentiable sensor placement and informative path planning[J/OL].
+The International Journal of Robotics Research, 2026, 45(8): 1247--1284.
+\url{https://doi.org/10.1177/02783649251384993}.
+
+\bibitem{moon2026iatigris}
+Moon B, Suvarna N, Jong A, et al.
+IA-TIGRIS: an incremental and adaptive sampling-based planner for online
+informative path planning[J/OL].
+IEEE Transactions on Robotics, 2026, 42: 1695--1713.
+\url{https://doi.org/10.1109/TRO.2026.3672542}.
+
+\bibitem{toussaint1983calipers}
+Toussaint G T.
+Solving geometric problems with the rotating calipers[C/OL]//IEEE MELECON '83,
+1983: 1.
+\url{https://www-cgrl.cs.mcgill.ca/~godfried/publications/calipers.pdf}.
+
+\bibitem{elzinga1972sphere}
+Elzinga D J, Hearn D W.
+The minimum covering sphere problem[J/OL].
+Management Science, 1972, 19(1): 96--104.
+\url{https://doi.org/10.1287/mnsc.19.1.96}.
+
+\bibitem{bishop2010geometry}
+Bishop A N, Fidan B, Anderson B D O, et al.
+Optimality analysis of sensor-target localization geometries[J/OL].
+Automatica, 2010, 46(3): 479--492.
+\url{https://doi.org/10.1016/j.automatica.2009.12.003}.
+
+\bibitem{dogancay2022aoa}
+Dogancay K.
+Optimal geometries for AOA localization in the Bayesian sense[J/OL].
+Sensors, 2022, 22(24): 9802.
+\url{https://doi.org/10.3390/s22249802}.
+
+\bibitem{banhelyi2015covering}
+B\'{a}nhelyi B, Palatinus E, L\'{e}vai B L.
+Optimal circle covering problems and their applications[J/OL].
+Central European Journal of Operations Research, 2015, 23(4): 815--832.
+\url{https://doi.org/10.1007/s10100-014-0362-7}.
+
+\bibitem{vanderhook2015active}
+Vander Hook J, Tokekar P, Isler V.
+Algorithms for cooperative active localization of static targets with mobile
+bearing sensors under communication constraints[J/OL].
+IEEE Transactions on Robotics, 2015, 31(4): 864--876.
+\url{https://doi.org/10.1109/TRO.2015.2432612}.
+
 \end{thebibliography}
   
 \newpage
@@ -1299,87 +1514,1640 @@ $n_\varphi^{\mathsf T}(A_i-G)<0$。将三式按 $\lambda_i$ 加权相加，得
 \begin{appendices}
 \section*{附录}
 
-\section{模板所用的宏包}
-\begin{table}[htbp]
-    \centering
-    \caption{宏包罗列}
-    \begin{tabular}{ccccc}
-        \toprule
-        \multicolumn{5}{c}{模板中已经加载的宏包} \\
-        \midrule
-        amsbsy & amsfonts & {amsgen} & {amsmath} & {amsopn} \\
-        amssymb & amstext & {appendix} & {array} & {atbegshi} \\
-        atveryend & auxhook & {bigdelim} & {bigintcalc} & {bigstrut} \\
-        bitset & bm    & {booktabs} & {calc} & {caption} \\
-        caption3 & CJKfntef & {cprotect} & {ctex} & {ctexhook} \\
-        ctexpatch & enumitem & {etexcmds} & {etoolbox} & {everysel} \\
-        expl3 & fix-cm & {fontenc} & {fontspec} & {fontspec-xetex} \\
-        geometry & gettitlestring & {graphics} & {graphicx} & {hobsub} \\
-        hobsub-generic & hobsub-hyperref & {hopatch} & {hxetex} & {hycolor} \\
-        hyperref & ifluatex & {ifpdf} & {ifthen} & {ifvtex} \\
-        ifxetex & indentfirst & {infwarerr} & {intcalc} & {keyval} \\
-        kvdefinekeys & kvoptions & {kvsetkeys} & {l3keys2e} & {letltxmacro} \\
-        listings & longtable & {lstmisc} & {ltcaption} & {ltxcmds} \\
-        multirow & nameref & {pdfescape} & {pdftexcmds} & {refcount} \\
-        rerunfilecheck & stringenc & {suffix} & {titletoc} & {tocloft} \\
-        trig  & ulem  & {uniquecounter} & {url} & {xcolor} \\
-        xcolor-patch & xeCJK & {xeCJKfntef} & {xeCJK-listings} & {xparse} \\
-        xtemplate & zhnumber &       &       &  \\
-        \bottomrule
-    \end{tabular}%
-    \label{tab:addlabel}%
-\end{table}%
+\section{问题一求解代码}
+
+\noindent\textsuperscript{[3]}（AI调试，2026-09-11）
+
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import math
+from itertools import combinations
+import rotating_calipers as rc
+__all__ = [
+    "wedge_halfplanes",
+    "normals_positively_span",
+    "intersect_halfplanes",
+    "region_from_bearings",
+    "disk_polygon",
+    "clip_halfplane",
+]
+
+def wedge_halfplanes(sx: float, sy: float, theta_deg: float, alpha_deg: float = 1.0):
+    th = math.radians(theta_deg)
+    al = math.radians(alpha_deg)
+    ux, uy = math.cos(th), math.sin(th)
+    t = math.tan(al)
+
+    cuS = ux * sy - uy * sx          # cross(u, S)
+    duS = ux * sx + uy * sy          # dot(u, S)
+    return [
+        (-uy - t * ux, ux - t * uy, cuS - t * duS),
+        (uy - t * ux, -ux - t * uy, -cuS - t * duS),
+        (-ux, -uy, -duS),
+    ]
+
+def normals_positively_span(hps) -> bool:
+    angs = sorted(math.atan2(b, a) for a, b, _ in hps)
+    n = len(angs)
+    if n < 2:
+        return False
+    gaps = [angs[i + 1] - angs[i] for i in range(n - 1)]
+    gaps.append(angs[0] + 2 * math.pi - angs[-1])
+    return max(gaps) < math.pi - 1e-12
+
+def _line_intersect(l1, l2):
+    a1, b1, c1 = l1
+    a2, b2, c2 = l2
+    det = a1 * b2 - a2 * b1
+    if abs(det) < 1e-14:
+        return None
+    return ((c1 * b2 - c2 * b1) / det, (a1 * c2 - a2 * c1) / det)
+
+def intersect_halfplanes(hps, scale: float = 1.0):
+    if not hps:
+        return "unbounded", []
+    if not normals_positively_span(hps):
+        return "unbounded", []
+    tol = 1e-9 * max(1.0, scale)
+    cand = []
+    for l1, l2 in combinations(hps, 2):
+        p = _line_intersect(l1, l2)
+        if p is None:
+            continue
+        if all(a * p[0] + b * p[1] - c <= tol for a, b, c in hps):
+            cand.append(p)
+    if not cand:
+        return "empty", []
+    poly = rc.simplify_polygon(rc.convex_hull(cand))
+    return ("ok", poly) if poly else ("empty", [])
 
 
-\section{代码一}
+def disk_polygon(cx: float, cy: float, radius: float, n_sides: int = 720):
+    """圆盘的内接正 n 边形顶点（逆时针）。"""
+    return [
+        (cx + radius * math.cos(2 * math.pi * i / n_sides),
+         cy + radius * math.sin(2 * math.pi * i / n_sides))
+        for i in range(n_sides)
+    ]
 
-\begin{lstlisting}[language=matlab]
-kk=2;[mdd,ndd]=size(dd);
-while ~isempty(V)
-[tmpd,j]=min(W(i,V));tmpj=V(j);
-for k=2:ndd
-[tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
-tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
-end
-tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
-if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
-else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
-if dd(2,tmp4)==ss(tmp6,tmp4)
-ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
-else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
-end;end
-dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
-[mdd,ndd]=size(dd);kk=kk+1;
-end; S=ss; D=dd(1,:);
+def clip_halfplane(poly, hp, tol: float = 1e-9):
+    """用单个半平面 a.x + b.y <= c 裁剪多边形（Sutherland-Hodgman）。"""
+    a, b, c = hp
+    n = len(poly)
+    if n == 0:
+        return []
+    out = []
+    for i in range(n):
+        p = poly[i]
+        q = poly[(i + 1) % n]
+        dp = a * p[0] + b * p[1] - c
+        dq = a * q[0] + b * q[1] - c
+        pin, qin = dp <= tol, dq <= tol
+        if pin:
+            out.append(p)
+        if pin != qin:
+            t = dp / (dp - dq)
+            out.append((p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])))
+    return out
+
+def region_from_bearings(
+    detections,
+    alpha_deg: float = 1.0,
+    region_disk_radius=None,
+    reception_max=None,
+    n_sides: int = 720,
+):
+    notes = []
+    scale = 1.0
+    for x, y, _ in detections:
+        scale = max(scale, abs(x), abs(y))
+
+    wedge_hps = []
+    for x, y, th in detections:
+        wedge_hps.extend(wedge_halfplanes(x, y, th, alpha_deg))
+
+    if not region_disk_radius and not reception_max:
+        status, poly = intersect_halfplanes(wedge_hps, scale)
+        if status == "unbounded":
+            notes.append(
+                "角楔交集无界：各示向度方向锥存在公共方向，没有有限的定位区域直径。"
+                "需增加一个不同方位的检测点，或叠加圆域/接收距离约束。"
+            )
+        return status, poly, notes
+    seed = None
+    if region_disk_radius:
+        seed = disk_polygon(0.0, 0.0, region_disk_radius, n_sides)
+        notes.append(
+            f"叠加圆域约束 r <= {region_disk_radius:g} m"
+            f"（内接 {n_sides} 边形，径向亏空 "
+            f"{region_disk_radius * (1 - math.cos(math.pi / n_sides)):.4f} m）"
+        )
+    if reception_max:
+        for x, y, _ in detections:
+            disk = disk_polygon(x, y, reception_max, n_sides)
+            seed = disk if seed is None else _clip_by_convex(seed, disk, scale)
+            if not seed:
+                break
+        notes.append(f"叠加接收距离约束 <= {reception_max:g} m")
+    if not seed:
+        return "empty", [], notes
+    tol = 1e-9 * max(1.0, scale)
+    poly = seed
+    for hp in wedge_hps:
+        poly = clip_halfplane(poly, hp, tol)
+        if not poly:
+            break
+    if not poly:
+        return "empty", [], notes
+    poly = rc.simplify_polygon(rc.convex_hull(poly))
+    return ("ok", poly, notes) if poly else ("empty", [], notes)
+
+def _clip_by_convex(subject, clipper, scale: float = 1.0):
+    tol = 1e-9 * max(1.0, scale)
+    clip = rc.rotate_to_ccw(list(clipper))
+    m = len(clip)
+    if m < 3:
+        return []
+    poly = list(subject)
+    for i in range(m):
+        p, q = clip[i], clip[(i + 1) % m]
+        ex, ey = q[0] - p[0], q[1] - p[1]
+        a, b = ey, -ex                   
+        c = a * p[0] + b * p[1]
+        poly = clip_halfplane(poly, (a, b, c), tol)
+        if not poly:
+            break
+    return poly
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import math
+__all__ = [
+    "cross",
+    "convex_hull",
+    "simplify_polygon",
+    "polygon_area",
+    "rotate_to_ccw",
+    "rotating_calipers_diameter",
+    "antipodal_pairs",
+    "brute_force_diameter",
+]
+def cross(ox: float, oy: float, ax: float, ay: float, bx: float, by: float) -> float:
+    return (ax - ox) * (by - oy) - (ay - oy) * (bx - ox)
+
+def dist(p, q) -> float:
+    return math.hypot(q[0] - p[0], q[1] - p[1])
+
+def _scale_of(poly) -> float:
+    m = 1.0
+    for x, y in poly:
+        m = max(m, abs(x), abs(y))
+    return m
+
+def rotate_to_ccw(poly):
+    s = 0.0
+    n = len(poly)
+    for i in range(n):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % n]
+        s += x1 * y2 - x2 * y1
+    return list(poly) if s >= 0 else list(reversed(poly))
+
+def convex_hull(points):
+    pts = sorted({(float(x), float(y)) for x, y in points})
+    if len(pts) <= 2:
+        return pts
+    def half(seq):
+        out = []
+        for p in seq:
+            while len(out) >= 2 and cross(
+                out[-2][0], out[-2][1], out[-1][0], out[-1][1], p[0], p[1]
+            ) <= 0:
+                out.pop()
+            out.append(p)
+        return out
+    lower = half(pts)
+    upper = half(reversed(pts))
+    return lower[:-1] + upper[:-1]
+
+def simplify_polygon(poly, rtol: float = 1e-9):
+    pts = [(float(x), float(y)) for x, y in poly]
+    n = len(pts)
+    if n < 3:
+        return pts
+    eps = rtol * _scale_of(pts)
+    keep = []
+    for p in pts:
+        if keep and dist(p, keep[-1]) <= eps:
+            continue
+        keep.append(p)
+    if len(keep) >= 2 and dist(keep[0], keep[-1]) <= eps:
+        keep.pop()
+    pts = keep
+    if len(pts) < 3:
+        return pts
+    for _ in range(len(pts)):
+        m = len(pts)
+        out = []
+        for i in range(m):
+            a, b, c = pts[(i - 1) % m], pts[i], pts[(i + 1) % m]
+            lac = dist(a, c)
+            if dist(a, b) <= eps or dist(b, c) <= eps or lac <= eps:
+                continue
+            h = abs(cross(a[0], a[1], c[0], c[1], b[0], b[1])) / lac
+            if h <= eps:
+                continue 
+            out.append(b)
+        if len(out) == m:
+            break
+        pts = out
+        if len(pts) < 3:
+            break
+    return pts
+
+def polygon_area(poly) -> float:
+    n = len(poly)
+    if n < 3:
+        return 0.0
+    s = 0.0
+    for i in range(n):
+        x1, y1 = poly[i]
+        x2, y2 = poly[(i + 1) % n]
+        s += x1 * y2 - x2 * y1
+    return abs(s) / 2.0
+
+def _area2(poly, i: int, j: int, k: int) -> float:
+    ax, ay = poly[i]
+    bx, by = poly[j]
+    cx, cy = poly[k]
+    return abs((bx - ax) * (cy - ay) - (by - ay) * (cx - ax))
+
+def rotating_calipers_diameter(poly):
+    poly = rotate_to_ccw(list(poly))
+    n = len(poly)
+    if n == 0:
+        return 0.0, -1, -1
+    if n == 1:
+        return 0.0, 0, 0
+    if n == 2:
+        return dist(poly[0], poly[1]), 0, 1
+    best = -1.0
+    bi = bj = 0
+    k = 1
+    advances = 0
+    limit = 2 * n + 4 
+    for i in range(n):
+        ni = (i + 1) % n
+        while advances <= limit:
+            nk = (k + 1) % n
+            if _area2(poly, i, ni, nk) > _area2(poly, i, ni, k):
+                k = nk
+                advances += 1
+            else:
+                break
+        for p, q in ((i, k), (ni, k)):
+            if p == q:
+                continue
+            d = dist(poly[p], poly[q])
+            if d > best:
+                best, bi, bj = d, p, q
+    return best, bi, bj
+
+def antipodal_pairs(poly):
+    poly = rotate_to_ccw(list(poly))
+    n = len(poly)
+    if n < 2:
+        return []
+    if n == 2:
+        return [(0, 1)]
+    tol = 1e-12 * max(1.0, _scale_of(poly)) ** 2
+    pairs = set()
+    k = 1
+    advances = 0
+    limit = 2 * n + 4
+    for i in range(n):
+        ni = (i + 1) % n
+        while advances <= limit:
+            nk = (k + 1) % n
+            if _area2(poly, i, ni, nk) > _area2(poly, i, ni, k) + tol:
+                k = nk
+                advances += 1
+            else:
+                break
+        a = _area2(poly, i, ni, k)
+        for j in (i, ni):
+            pairs.add((min(j, k), max(j, k)))
+        nk = (k + 1) % n
+        if abs(_area2(poly, i, ni, nk) - a) <= tol:
+            for j in (i, ni):
+                pairs.add((min(j, nk), max(j, nk)))
+    return sorted(pairs)
+
+def brute_force_diameter(poly):
+    n = len(poly)
+    if n == 0:
+        return 0.0, -1, -1
+    if n == 1:
+        return 0.0, 0, 0
+    best = -1.0
+    bi = bj = 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = dist(poly[i], poly[j])
+            if d > best:
+                best, bi, bj = d, i, j
+    return best, bi, bj
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import argparse
+import json
+import math
+import os
+import sys
+import localization_region as lr
+import rotating_calipers as rc
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUTDIR = os.path.join(HERE, "results")
+ARENA_RADIUS = 1800.0
+
+def solve(detections, alpha_deg: float = 1.0, name: str = "case", **kw):
+    status, poly, notes = lr.region_from_bearings(detections, alpha_deg, **kw)
+    res = dict(
+        name=name,
+        status=status,
+        alpha_deg=alpha_deg,
+        detections=[list(d) for d in detections],
+        notes=notes,
+        region=[list(p) for p in poly],
+        n_vertices=len(poly),
+        area=rc.polygon_area(poly) if poly else 0.0,
+        diameter=0.0,
+        diameter_pair=None,
+        diameter_pair_brute=None,
+        calipers_vs_brute=0.0,
+        antipodal_pairs=[],
+        n_antipodal=0,
+    )
+    if status != "ok" or len(poly) < 2:
+        return res
+    d_cal, i_cal, j_cal = rc.rotating_calipers_diameter(poly)
+    d_bf, i_bf, j_bf = rc.brute_force_diameter(poly)
+    ap = rc.antipodal_pairs(poly)
+    res.update(
+        diameter=d_bf,
+        diameter_pair=[int(i_cal), int(j_cal)],
+        diameter_pair_brute=[int(i_bf), int(j_bf)],
+        calipers_vs_brute=abs(d_cal - d_bf),
+        antipodal_pairs=[[int(a), int(b)] for a, b in ap],
+        n_antipodal=len(ap),
+    )
+    return res
+
+def report(res) -> None:
+    print("=" * 76)
+    print(f"算例：{res['name']}")
+    print("=" * 76)
+    print(f"检测点数 k = {len(res['detections'])}，角楔半角 α = {res['alpha_deg']:g}°")
+    for i, (x, y, th) in enumerate(res["detections"], 1):
+        print(f"    S{i}: ({x:12.4f}, {y:12.4f})   示向度 = {th:.4f}°")
+    for n in res["notes"]:
+        print(f"  [约束] {n}")
+    if res["status"] != "ok":
+        print(f"\n区域状态：{res['status']} —— 无法给出有限直径")
+        return
+    print(f"\n定位区域：{res['n_vertices']} 顶点，面积 {res['area']:.4f} m²")
+    for i, (x, y) in enumerate(res["region"]):
+        print(f"    V{i}: ({x:14.6f}, {y:14.6f})")
+    i, j = res["diameter_pair"]
+    print(f"\n【旋转卡壳】直径 D = {res['diameter']:.9f} m，端点 V{i} ---- V{j}")
+    print(f"    枚举到的对踵点对 {res['n_antipodal']} 个"
+          f"（上界 3n = {3 * res['n_vertices']}），"
+          f"顶点对总数 C(n,2) = {res['n_vertices'] * (res['n_vertices'] - 1) // 2}")
+    print(f"    对踵点对：{res['antipodal_pairs']}")
+    print(f"【交叉校验】暴力枚举 O(n²) 给出 D = {res['diameter']:.9f} m，"
+          f"端点 {res['diameter_pair_brute']}，"
+          f"两种方法偏差 = {res['calipers_vs_brute']:.3e} m")
+
+def _bearings_from_source(G, pts):
+    return [
+        math.degrees(math.atan2(G[1] - py, G[0] - px)) % 360.0 for px, py in pts
+    ]
+
+def demo_cases():
+    cases = {}
+    def make(key, name, G, pts, **kw):
+        bs = _bearings_from_source(G, pts)
+        cases[key] = dict(
+            name=name,
+            alpha_deg=kw.pop("alpha_deg", 1.0),
+            detections=[[px, py, b] for (px, py), b in zip(pts, bs)],
+            true_source=list(G),
+            **kw,
+        )
+    G = (150.0, -250.0)
+    make("case1", "case1 双站正交交会（交会角 90°）", G,
+         [(G[0] + 1200.0, G[1]), (G[0], G[1] + 1200.0)])
+    make("case2", "case2 三站交会", G,
+         [(G[0] + 1200.0, G[1]),
+          (G[0], G[1] + 1200.0),
+          (G[0] + 1300.0 * math.cos(math.radians(210.0)),
+           G[1] + 1300.0 * math.sin(math.radians(210.0)))])
+    make("case3", "case3 双站小交会角 5°（细长区域）", G,
+         [(G[0] + 1200.0, G[1]),
+          (G[0] + 1300.0 * math.cos(math.radians(5.0)),
+           G[1] + 1300.0 * math.sin(math.radians(5.0)))])
+    make("case4", "case4 双站同方位（方向锥重叠 → 区域无界）", G,
+         [(G[0] + 1200.0, G[1]), (G[0] + 1300.0, G[1])])
+    cases["case4b"] = dict(cases["case4"])
+    cases["case4b"]["name"] = "case4b 同方位 + 1800 m 圆域约束（变为有界）"
+    cases["case4b"]["region_disk_radius"] = ARENA_RADIUS
+    make("case5", "case5 四站交会", G,
+         [(G[0] + 1200.0, G[1]),
+          (G[0], G[1] + 1200.0),
+          (G[0] + 1300.0 * math.cos(math.radians(210.0)),
+           G[1] + 1300.0 * math.sin(math.radians(210.0))),
+          (G[0] + 1400.0 * math.cos(math.radians(300.0)),
+           G[1] + 1400.0 * math.sin(math.radians(300.0)))])
+    multi = [
+        (20.0, 1200.0), (120.0, 1350.0), (225.0, 1100.0), (310.0, 1450.0),
+        (55.0, 1250.0), (140.0, 1300.0), (275.0, 1150.0), (35.0, 1400.0),
+        (190.0, 1050.0), (105.0, 1420.0), (290.0, 1180.0), (205.0, 1330.0),
+    ]
+    def multi_case(key, name, k):
+        pts = []
+        for ang, rr in multi[:k]:
+            a = math.radians(ang)
+            pts.append((G[0] + rr * math.cos(a), G[1] + rr * math.sin(a)))
+        bs = _bearings_from_source(G, pts)
+        cases[key] = dict(
+            name=name,
+            alpha_deg=1.0,
+            detections=[[px, py, b] for (px, py), b in zip(pts, bs)],
+            true_source=list(G),
+        )
+    for k, key in ((6, "case6"), (8, "case7"), (12, "case8")):
+        multi_case(key, f"{key} {k}站交会", k)
+    return cases
+
+def run_case(case, save=True):
+    dets = [tuple(d) for d in case["detections"]]
+    kw = {}
+    for k in ("region_disk_radius", "reception_max"):
+        if case.get(k):
+            kw[k] = case[k]
+    res = solve(dets, case.get("alpha_deg", 1.0), name=case["name"], **kw)
+    report(res)
+    if save:
+        os.makedirs(OUTDIR, exist_ok=True)
+        key = case.get("key", "case")
+        with open(os.path.join(OUTDIR, f"{key}.json"), "w", encoding="utf-8") as fh:
+            json.dump(res, fh, ensure_ascii=False, indent=2)
+    print()
+    return res
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="问题 1 前半问：旋转卡壳求定位区域直径")
+    ap.add_argument("--demo", default=None)
+    ap.add_argument("--list", action="store_true")
+    ap.add_argument("--json", default=None)
+    args = ap.parse_args(argv)
+    cases = demo_cases()
+    if args.list:
+        for k, v in cases.items():
+            print(f"{k}\t{v['name']}")
+        return 0
+    if args.json:
+        with open(args.json, encoding="utf-8") as fh:
+            case = json.load(fh)
+        case.setdefault("key", os.path.splitext(os.path.basename(args.json))[0])
+        run_case(case)
+        return 0
+    if args.demo:
+        if args.demo == "all":
+            sel = list(cases)
+        elif args.demo in cases:
+            sel = [args.demo]
+        else:
+            sel = [k for k in cases if args.demo in k]
+        if not sel:
+            print(f"未找到算例 {args.demo!r}")
+            return 2
+        for k in sel:
+            c = dict(cases[k])
+            c["key"] = k
+            run_case(c)
+        return 0
+    ap.print_help()
+    return 0
+
+if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    raise SystemExit(main())
+\end{lstlisting}
+
+\section{问题二求解代码}
+
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import math
+import os
+import sys
+import numpy as np
+HERE = os.path.dirname(os.path.abspath(__file__))
+P1 = os.path.join(os.path.dirname(HERE), "problem1(part1)")
+if os.path.isdir(P1):
+    sys.path.insert(0, P1)
+ARENA = 1800.0
+R_MIN = 1000.0
+T_RECV = 1500.0
+T_NEAR = 5.0
+ALPHA = 1.0
+def unit(deg):
+    r = math.radians(deg)
+    return np.array([math.cos(r), math.sin(r)])
+
+def _wedge_hps_arr(sx, sy, th_deg, alpha=ALPHA):
+    """一个角楔的 3 个半平面，返回 (3,3) 数组，每行 (a,b,c) 表示 a x + b y <= c。"""
+    th, al = math.radians(th_deg), math.radians(alpha)
+    ux, uy = math.cos(th), math.sin(th)
+    t = math.tan(al)
+    cuS = ux * sy - uy * sx
+    duS = ux * sx + uy * sy
+    return np.array([
+        [-uy - t * ux, ux - t * uy, cuS - t * duS],
+        [uy - t * ux, -ux - t * uy, -cuS - t * duS],
+        [-ux, -uy, -duS],
+    ])
+
+def region_diameter(S1, th1, S2, th2, tol=1e-6):
+    H = np.vstack([_wedge_hps_arr(S1[0], S1[1], th1),
+                   _wedge_hps_arr(S2[0], S2[1], th2)])
+    angs = np.sort(np.arctan2(H[:, 1], H[:, 0]))
+    gaps = np.diff(np.concatenate([angs, angs[:1] + 2 * math.pi]))
+    if gaps.max() >= math.pi - 1e-12:
+        return None
+    iu = np.triu_indices(6, 1)
+    a1, b1, c1 = H[iu[0], 0], H[iu[0], 1], H[iu[0], 2]
+    a2, b2, c2 = H[iu[1], 0], H[iu[1], 1], H[iu[1], 2]
+    det = a1 * b2 - a2 * b1
+    good = np.abs(det) > 1e-14
+    safe = np.where(good, det, 1.0)
+    x = np.where(good, (c1 * b2 - c2 * b1) / safe, np.nan)
+    y = np.where(good, (a1 * c2 - a2 * c1) / safe, np.nan)
+    feas = good.copy()
+    for a, b, c in H:
+        feas &= (a * x + b * y - c) <= tol
+    P = np.column_stack([x[feas], y[feas]])
+    if len(P) < 2:
+        return 0.0
+    d2 = ((P[:, None, :] - P[None, :, :]) ** 2).sum(-1)
+    return float(math.sqrt(d2.max()))
+
+def t_arena_along(S1, phi_deg, arena=ARENA):
+    u = unit(phi_deg)
+    b0 = float(S1 @ u)
+    disc = b0 * b0 + arena * arena - float(S1 @ S1)
+    return None if disc <= 0 else -b0 + math.sqrt(disc)
+
+def source_vertices(S1, th, r_cap):
+    out = []
+    for s in (+1.0, -1.0):
+        phi = th + s * ALPHA
+        u = unit(phi)
+        t_ar = t_arena_along(S1, phi)
+        r_far = max(0.0, min(r_cap, t_ar if t_ar else 0.0))
+        out.append(S1 + T_NEAR * u)
+        if r_far > 1e-9:
+            out.append(S1 + r_far * u)
+    return np.array(out)
+
+
+def edge_source(S1, th, r_cap, n_edge=100):
+    S1 = np.asarray(S1, float)
+    pts = []
+    for s in (+1.0, -1.0):
+        phi = th + s * ALPHA
+        u = unit(phi)
+        t_ar = t_arena_along(S1, phi)
+        r_hi = max(0.0, min(r_cap, t_ar if t_ar else 0.0))
+        if r_hi <= T_NEAR:
+            continue
+        for r in np.linspace(T_NEAR, r_hi, n_edge):
+            pts.append(S1 + r * u)
+    return np.array(pts)
+
+
+def bearing_from(S, G):
+    return math.degrees(math.atan2(G[1] - S[1], G[0] - S[0])) % 360.0
+
+def solve_case(S1, th, na=130, nb=130, n_edge=100, verbose=True):
+    S1 = np.asarray(S1, float)
+    u1, n1 = unit(th), unit(th + 90.0)
+    Vc = source_vertices(S1, th, R_MIN)          
+    Vo = edge_source(S1, th, T_RECV, n_edge)     
+    t_max = min(T_RECV, t_arena_along(S1, th) or 0.0)
+    a = np.linspace(-ARENA, T_NEAR + R_MIN, na)
+    b = np.linspace(-R_MIN, R_MIN, nb)
+    A, B = np.meshgrid(a, b)
+    S2x = S1[0] + A * u1[0] + B * n1[0]
+    S2y = S1[1] + A * u1[1] + B * n1[1]
+    ok = np.ones_like(A, dtype=bool)
+    for V in Vc:
+        ok &= ((S2x - V[0]) ** 2 + (S2y - V[1]) ** 2) <= R_MIN ** 2
+    ok &= (S2x ** 2 + S2y ** 2) <= ARENA ** 2
+    D = np.full(A.shape, np.nan)
+    idx = np.argwhere(ok)
+    nbad = 0
+    for i, j in idx:
+        S2 = np.array([S2x[i, j], S2y[i, j]])
+        worst = 0.0
+        bad = False
+        for V in Vo:
+            th1v = bearing_from(S1, V)
+            th2v = bearing_from(S2, V)
+            d = region_diameter(S1, th1v, S2, th2v)
+            if d is None:
+                bad = True
+                break
+            worst = max(worst, d)
+        if bad:
+            nbad += 1
+            continue
+        D[i, j] = worst
+    valid = ~np.isnan(D)
+    Dmin = float(np.nanmin(D))
+    if verbose:
+        print(f"   可行点 {int(ok.sum())}，可评估 {int(valid.sum())}，"
+              f"无界/失败 {nbad}")
+        print(f"   最坏定位误差最小值 D_min = {Dmin:.2f} m  "
+              f"（网格最优位置 a={float(a[np.unravel_index(np.nanargmin(D), D.shape)[1]]):.0f}, "
+              f"b={float(b[np.unravel_index(np.nanargmin(D), D.shape)[0]]):.0f}）")
+
+    return dict(S1=S1, th=th, u1=u1, n1=n1, a=a, b=b, A=A, B=B,
+                S2x=S2x, S2y=S2y, D=D, ok=ok, Vc=Vc, Vo=Vo,
+                t_max=t_max, Dmin=Dmin,
+                n_feasible=int(valid.sum()),
+                cell_area=float((a[1] - a[0]) * (b[1] - b[0])))
+
+def sub_region(r, eps):
+    """D <= D_min*(1+eps) 的子区，返回布尔掩码与统计。"""
+    m = (~np.isnan(r["D"])) & (r["D"] <= r["Dmin"] * (1.0 + eps))
+    n = int(m.sum())
+    area = n * r["cell_area"]
+    return m, n, area
+
+def main():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    for fam in ("Microsoft YaHei", "SimHei", "SimSun", "DejaVu Sans"):
+        try:
+            font_manager.findfont(fam, fallback_to_default=False)
+            plt.rcParams["font.sans-serif"] = [fam]
+            break
+        except Exception:
+            continue
+    plt.rcParams["axes.unicode_minus"] = False
+    CASES = [
+        ("(a) 视线沿半径朝外", (0.0, 900.0), 90.0),
+        ("(b) 斜穿圆域", (1200.0, 700.0), 120.0),
+        ("(c) 近切向斜穿", (1500.0, 900.0), 120.0),
+    ]
+    EPS_LIST = [0.02, 0.05, 0.10, 0.20]
+    print("=" * 104)
+    print("第二问：候选区域 → 筛出定位误差最小的部分（含角楔厚度）")
+    print("=" * 104)
+    res = []
+    for tag, S1, th in CASES:
+        print(f"\n{tag}   S1={S1}, θ1={th}°")
+        r = solve_case(S1, th)
+        res.append((tag, S1, th, r))
+        print(f"   阈值 ε    子区点数    子区面积(m²)   占可行域比   该子区最坏误差")
+        for eps in EPS_LIST:
+            m, n, area = sub_region(r, eps)
+            print(f"   {eps:>5.0%}   {n:>9}   {area:>12.0f}   "
+                  f"{area / (r['n_feasible'] * r['cell_area']):>10.1%}   "
+                  f"{r['Dmin'] * (1 + eps):>8.1f} m")
+    fig, axes = plt.subplots(1, 3, figsize=(21, 7.2))
+    thv = np.linspace(0, 2 * math.pi, 700)
+    for ax, (tag, S1, th, r) in zip(axes, res):
+        S1a = np.asarray(S1)
+        ax.plot(ARENA * np.cos(thv), ARENA * np.sin(thv), color="0.45", ls="--",
+                lw=1.2, zorder=5, label="目标区域 (r=1800)")
+        poly = np.vstack([r["Vc"][0], r["Vc"][2], r["Vc"][3], r["Vc"][1]])
+        ax.fill(poly[:, 0], poly[:, 1], color="lime", alpha=0.9, zorder=9,
+                label="源可行域（含角楔厚度）")
+        Dm = r["D"]
+        pos = Dm[~np.isnan(Dm)]
+        vmin, vmax = r["Dmin"], float(np.percentile(pos, 85))
+        cs = ax.contourf(r["S2x"], r["S2y"], Dm,
+                         levels=np.linspace(vmin, vmax, 25), cmap="viridis_r",
+                         alpha=0.95, zorder=1, extend="max")
+        m5, _, _ = sub_region(r, 0.05)
+        ax.contour(r["S2x"], r["S2y"], m5.astype(float), levels=[0.5],
+                   colors="red", linewidths=2.6, zorder=12)
+        ax.plot([], [], color="red", lw=2.6,
+                label=f"最小误差子区 $D\\leq D_{{min}}\\times1.05$")
+        ax.plot([], [], color="none", label=f"$D_{{min}}$={r['Dmin']:.0f} m")
+        L = max(r["t_max"] * 1.4, 300)
+        ax.plot([S1a[0], S1a[0] + L * r["u1"][0]], [S1a[1], S1a[1] + L * r["u1"][1]],
+                color="tab:blue", lw=1.6, alpha=0.9, zorder=10, label="视线")
+        ax.plot(*S1a, "o", color="k", ms=10, zorder=13)
+        ax.annotate("$S_1$", S1a, textcoords="offset points", xytext=(-26, -34),
+                    fontsize=12, zorder=14)
+        lim = ARENA * 1.06
+        ax.set_aspect("equal")
+        ax.set_xlim(-lim, lim)
+        ax.set_ylim(-lim, lim)
+        ax.grid(alpha=0.18)
+        ax.set_xlabel("x / m")
+        ax.set_ylabel("y / m")
+        ax.legend(loc="lower left", fontsize=8.2)
+        ax.set_title(f"{tag}\n$S_1$=({S1[0]:.0f},{S1[1]:.0f}), θ1={th:.0f}°, "
+                     f"$t_{{max}}$={r['t_max']:.0f} m", fontsize=11.5)
+    fig.subplots_adjust(left=0.035, right=0.912, top=0.82, bottom=0.07, wspace=0.14)
+    cax = fig.add_axes([0.924, 0.11, 0.011, 0.68])
+    cb = fig.colorbar(cs, cax=cax)
+    cb.set_label("最坏定位误差 $D$ / m（越小越好）", fontsize=11)
+    fig.suptitle("第二问：把「所有能保证探测的点」筛成「定位误差最小的那部分」"
+                 "（红色圈出 $D\\leq1.05D_{min}$ 的子区）", fontsize=14, y=0.965)
+    p1 = os.path.join(HERE, "最小误差候选区_三场景.png")
+    fig.savefig(p1, dpi=125)
+    plt.close(fig)
+    print("\n->", p1)
+    tag, S1, th, r = res[0]
+    S1a = np.asarray(S1)
+    fig2, (axA, axB, axC) = plt.subplots(1, 3, figsize=(21, 6.8))
+    Dm = r["D"]
+    pos = Dm[~np.isnan(Dm)]
+    vmin, vmax = r["Dmin"], float(np.percentile(pos, 85))
+    cs = axA.contourf(r["S2x"], r["S2y"], Dm,
+                      levels=np.linspace(vmin, vmax, 30), cmap="viridis_r",
+                      alpha=0.95, zorder=1, extend="max")
+    cols = ["red", "orange", "magenta", "cyan"]
+    for eps, col in zip(EPS_LIST, cols):
+        m, n, area = sub_region(r, eps)
+        axA.contour(r["S2x"], r["S2y"], m.astype(float), levels=[0.5],
+                    colors=col, linewidths=2.0, zorder=10)
+        axA.plot([], [], color=col, lw=2.2,
+                 label=f"$\\varepsilon$={eps:.0%} → {area/1e4:.0f} 万 m²")
+    axA.plot(ARENA * np.cos(thv), ARENA * np.sin(thv), color="0.45", ls="--",
+             lw=1.2, zorder=5)
+    poly = np.vstack([r["Vc"][0], r["Vc"][2], r["Vc"][3], r["Vc"][1]])
+    axA.fill(poly[:, 0], poly[:, 1], color="lime", alpha=0.85, zorder=9)
+    axA.plot(*S1a, "o", color="k", ms=10, zorder=13)
+    axA.annotate("$S_1$", S1a, textcoords="offset points", xytext=(-26, -34),
+                 fontsize=12, zorder=14)
+    fv = ~np.isnan(Dm)
+    if fv.any():
+        xf, yf = r["S2x"][fv], r["S2y"][fv]
+        cx, cy = float(xf.mean()), float(yf.mean())
+        sp = max(float(np.ptp(xf)), float(np.ptp(yf))) * 0.72 + 60
+        axA.set_xlim(cx - sp, cx + sp)
+        axA.set_ylim(cy - sp, cy + sp)
+    axA.set_aspect("equal")
+    axA.grid(alpha=0.18)
+    axA.set_xlabel("x / m")
+    axA.set_ylabel("y / m")
+    axA.legend(loc="lower left", fontsize=8.5)
+    axA.set_title("(a) 阈值越松，子区越大：四条等值线", fontsize=12)
+    fig2.subplots_adjust(left=0.035, right=0.945, top=0.83, bottom=0.11, wspace=0.26)
+    cax2 = fig2.add_axes([0.957, 0.15, 0.010, 0.55])
+    cb2 = fig2.colorbar(cs, cax=cax2)
+    cb2.set_label("最坏定位误差 $D$ / m", fontsize=10)
+    eps_fine = np.linspace(0.0, 0.6, 200)
+    areas, dmaxs = [], []
+    for e in eps_fine:
+        m, n, area = sub_region(r, float(e))
+        areas.append(area / 1e4)
+        dmaxs.append(r["Dmin"] * (1 + e))
+    axB.plot(dmaxs, areas, color="tab:red", lw=2.6)
+    for eps, col in zip(EPS_LIST, cols):
+        axB.plot(r["Dmin"] * (1 + eps), sub_region(r, eps)[2] / 1e4, "o",
+                 color=col, ms=12, mec="k", mew=0.8)
+    axB.set_xlabel("允许的最坏定位误差 $D$ / m")
+    axB.set_ylabel("子区面积 / 万 m²")
+    axB.grid(alpha=0.25)
+    axB.set_title("(b) 误差-面积权衡：想要更准，可选范围指数收缩", fontsize=12)
+    labels = ["全部候选区"] + [f"ε={e:.0%}" for e in EPS_LIST]
+    dv = [float(np.nanmax(Dm))] + [r["Dmin"] * (1 + e) for e in EPS_LIST]
+    bars = axC.bar(labels, dv, color=["0.6"] + cols, alpha=0.9,
+                   edgecolor="k", lw=0.8)
+    for bb, vv in zip(bars, dv):
+        axC.annotate(f"{vv:,.0f}", (bb.get_x() + bb.get_width() / 2, vv),
+                     textcoords="offset points", xytext=(0, 5), ha="center",
+                     fontsize=10)
+    axC.set_yscale("log")
+    axC.set_ylabel("该方案能保证的最坏定位误差 / m（对数轴）")
+    axC.grid(alpha=0.25, axis="y", which="both")
+    axC.tick_params(axis="x", labelrotation=20)
+    axC.set_title("(c) 筛选带来的收益：最坏误差从\n"
+                  "「全部候选区」的量级降到 130 m 量级", fontsize=12)
+
+    fig2.suptitle("场景 A 的筛选细节：从「能保证探测」到「定位误差最小」",
+                  fontsize=14, y=0.965)
+    p2 = os.path.join(HERE, "最小误差候选区_筛选细节.png")
+    fig2.savefig(p2, dpi=125)
+    plt.close(fig)
+    print("->", p2)
+    fig3, axes3 = plt.subplots(1, 3, figsize=(21, 6.6))
+    for ax, (tag, S1, th, r) in zip(axes3, res):
+        S1a = np.asarray(S1)
+        m5, n5, a5 = sub_region(r, 0.05)
+        x = r["S2x"][m5]
+        y = r["S2y"][m5]
+        ax.plot(x, y, ".", color="red", ms=3)
+        allp = r["S2x"][~np.isnan(r["D"])]
+        allq = r["S2y"][~np.isnan(r["D"])]
+        ax.plot(allp, allq, ".", color="0.75", ms=1.2,
+                label=f"全部候选区（{r['n_feasible']} 点）")
+        ax.plot(x, y, ".", color="red", ms=3,
+                label=f"$\\varepsilon$=5% 子区（{n5} 点，{a5/1e4:.1f} 万 m²）")
+        ax.plot(*S1a, "o", color="k", ms=9, zorder=10)
+        ax.annotate("$S_1$", S1a, textcoords="offset points", xytext=(-24, -32),
+                    fontsize=11, zorder=11)
+        L = max(r["t_max"] * 1.3, 250)
+        ax.plot([S1a[0], S1a[0] + L * r["u1"][0]], [S1a[1], S1a[1] + L * r["u1"][1]],
+                color="tab:blue", lw=1.6, zorder=9, label="视线")
+        if len(x):
+            cx, cy = float(x.mean()), float(y.mean())
+            sp = max(float(np.ptp(x)), float(np.ptp(y))) * 1.8 + 120
+            ax.set_xlim(cx - sp, cx + sp)
+            ax.set_ylim(cy - sp, cy + sp)
+        ax.set_aspect("equal")
+        ax.grid(alpha=0.2)
+        ax.set_xlabel("x / m")
+        ax.set_ylabel("y / m")
+        ax.legend(loc="upper left", fontsize=8.5)
+        ax.set_title(f"{tag}\n$D_{{min}}$={r['Dmin']:.0f} m，"
+                     f"子区占全部的 {a5/(r['n_feasible']*r['cell_area']):.1%}",
+                     fontsize=11)
+    fig3.suptitle("三场景的「最小误差候选区」并列（ε=5%）：形状多为一条弧带，"
+                  "紧贴场地边界一侧", fontsize=14)
+    fig3.tight_layout(rect=[0, 0, 1, 0.90])
+    p3 = os.path.join(HERE, "最小误差候选区_三例并列.png")
+    fig3.savefig(p3, dpi=125)
+    plt.close(fig)
+    print("->", p3)
+    return [p1, p2, p3]
+
+if __name__ == "__main__":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+    main()
+\end{lstlisting}
+
+\section{问题三求解代码}
+
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import math
+import random
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Sequence, Tuple
+
+Point = Tuple[float, float]
+ARENA_R = 1800.0
+MIN_RECEIVE_R = 1000.0
+MAX_RECEIVE_R = 1500.0
+BEARING_ERR_DEG = 1.0
+NEAR_R = 5.0
+READY_RADIUS = 19.0
+CIRCLE_SIDES = 180
+COARSE_STEP = 125.0
+FINE_STEP = 30.0
+GEOM_KEEP_RATIO = 0.35
+MIN_ACTIVE_BASELINE = 80.0
+ADAPTIVE_COVER_TOL = 1e-6
+MOVE_SPEED_MPS = 5.0
+MEASURE_ACTION_S = 5.0
+TIME_RESIDUAL_WEIGHT = 0.85
+TIME_TO_CENTER_WEIGHT = 0.38
+TIME_QUALITY_CAP_EARLY = 1.50
+TIME_QUALITY_CAP_LATE = 1.18
+EARLY_CENTER_PROGRESS_WEIGHT = 1.05
+
+def sub(a: Point, b: Point) -> Point:
+    return (a[0] - b[0], a[1] - b[1])
+
+def dot(a: Point, b: Point) -> float:
+    return a[0] * b[0] + a[1] * b[1]
+
+def cross(a: Point, b: Point) -> float:
+    return a[0] * b[1] - a[1] * b[0]
+
+def dist(a: Point, b: Point) -> float:
+    return math.hypot(a[0] - b[0], a[1] - b[1])
+
+def centroid(poly: Sequence[Point]) -> Point:
+    if not poly:
+        return (0.0, 0.0)
+    return (sum(p[0] for p in poly) / len(poly),
+            sum(p[1] for p in poly) / len(poly))
+
+def bearing_deg(a: Point, b: Point) -> float:
+    return math.degrees(math.atan2(b[1] - a[1], b[0] - a[0])) % 360.0
+
+def dedup_polygon(poly: Sequence[Point]) -> List[Point]:
+    if not poly:
+        return []
+    out: List[Point] = []
+    for p in poly:
+        if not out or dist(p, out[-1]) > 1e-7:
+            out.append(p)
+    if len(out) >= 2 and dist(out[0], out[-1]) <= 1e-7:
+        out.pop()
+    return out
+
+def clip_halfplane(poly: Sequence[Point], f) -> List[Point]:
+    if not poly:
+        return []
+    out: List[Point] = []
+    prev = poly[-1]
+    fp = f(prev)
+    prev_in = fp >= -1e-10
+    for cur in poly:
+        fc = f(cur)
+        cur_in = fc >= -1e-10
+        if cur_in != prev_in:
+            den = fp - fc
+            if abs(den) > 1e-15:
+                t = fp / den
+                out.append((prev[0] + t * (cur[0] - prev[0]),
+                            prev[1] + t * (cur[1] - prev[1])))
+        if cur_in:
+            out.append(cur)
+        prev, fp, prev_in = cur, fc, cur_in
+    return dedup_polygon(out)
+
+def clip_wedge(poly: Sequence[Point], station: Point,
+               measured_deg: float,
+               alpha_deg: float = BEARING_ERR_DEG) -> List[Point]:
+    lo = math.radians(measured_deg - alpha_deg)
+    hi = math.radians(measured_deg + alpha_deg)
+    ulo = (math.cos(lo), math.sin(lo))
+    uhi = (math.cos(hi), math.sin(hi))
+    p1 = clip_halfplane(poly, lambda p: cross(ulo, sub(p, station)))
+    return clip_halfplane(p1, lambda p: -cross(uhi, sub(p, station)))
+
+def clip_disk_outer(poly: Sequence[Point], center: Point,
+                    radius: float, n: int = CIRCLE_SIDES) -> List[Point]:
+    out = list(poly)
+    for k in range(n):
+        a = 2 * math.pi * k / n
+        normal = (math.cos(a), math.sin(a))
+        out = clip_halfplane(
+            out,
+            lambda p, nrm=normal: radius - dot(nrm, sub(p, center))
+        )
+        if not out:
+            break
+    return out
+
+def polygon_diameter(poly: Sequence[Point]) -> float:
+    best = 0.0
+    for i in range(len(poly)):
+        for j in range(i + 1, len(poly)):
+            best = max(best, dist(poly[i], poly[j]))
+    return best
+
+def sample_poly(poly: Sequence[Point], max_vertices: int = 16) -> List[Point]:
+    if not poly:
+        return []
+    n = len(poly)
+    pts = list(poly) if n <= max_vertices else [
+        poly[(i * n) // max_vertices] for i in range(max_vertices)
+    ]
+    pts.append(centroid(poly))
+    return pts
+
+def robust_receive(point: Point, poly: Sequence[Point],
+                   radius: float = MIN_RECEIVE_R) -> bool:
+    return bool(poly) and max(dist(point, v) for v in poly) <= radius + 1e-7
+
+@dataclass
+class Circle:
+    c: Point
+    r: float
+
+def is_in_circle(c: Circle, p: Point) -> bool:
+    return dist(c.c, p) <= c.r + 1e-7
+
+def circle_two(a: Point, b: Point) -> Circle:
+    c = ((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0)
+    return Circle(c, dist(a, b) / 2.0)
+
+def circle_three(a: Point, b: Point, c: Point) -> Optional[Circle]:
+    ax, ay = a
+    bx, by = b
+    cx, cy = c
+    d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+    if abs(d) < 1e-12:
+        return None
+    ux = ((ax * ax + ay * ay) * (by - cy) +
+          (bx * bx + by * by) * (cy - ay) +
+          (cx * cx + cy * cy) * (ay - by)) / d
+    uy = ((ax * ax + ay * ay) * (cx - bx) +
+          (bx * bx + by * by) * (ax - cx) +
+          (cx * cx + cy * cy) * (bx - ax)) / d
+    cc = (ux, uy)
+    return Circle(cc, dist(cc, a))
+
+def minimum_enclosing_circle(points: Sequence[Point]) -> Circle:
+    pts = list(points)
+    if not pts:
+        return Circle((0.0, 0.0), 0.0)
+    rnd = random.Random(20260911)
+    rnd.shuffle(pts)
+    c: Optional[Circle] = None
+    for i, p in enumerate(pts):
+        if c is None or not is_in_circle(c, p):
+            c = Circle(p, 0.0)
+            for j in range(i):
+                q = pts[j]
+                if not is_in_circle(c, q):
+                    c = circle_two(p, q)
+                    for k in range(j):
+                        r = pts[k]
+                        if not is_in_circle(c, r):
+                            cc = circle_three(p, q, r)
+                            if cc is not None:
+                                c = cc
+                            else:
+                                opts = [circle_two(p, q), circle_two(p, r), circle_two(q, r)]
+                                opts = [o for o in opts if all(is_in_circle(o, z) for z in (p, q, r))]
+                                c = min(opts, key=lambda o: o.r)
+    assert c is not None
+    return c
+
+@dataclass
+class Observation:
+    pos: Point
+    svd_deg: float
+
+@dataclass
+class SourceState:
+    channel: int
+    poly: List[Point]
+    observations: List[Observation] = field(default_factory=list)
+    cleared: bool = False
+
+    def add_direction(self, pos: Point, svd_deg: float) -> None:
+        p = clip_wedge(self.poly, pos, svd_deg)
+        a = math.radians(svd_deg)
+        u = (math.cos(a), math.sin(a))
+        min_forward = NEAR_R * math.cos(math.radians(BEARING_ERR_DEG))
+        p = clip_halfplane(p, lambda x: dot(u, sub(x, pos)) - min_forward)
+        p = clip_disk_outer(p, pos, MAX_RECEIVE_R)
+        if not p:
+            raise RuntimeError(f"频道{self.channel}加入观测后可行域为空")
+        self.poly = p
+        self.observations.append(Observation(pos, svd_deg))
+
+    @property
+    def diameter(self) -> float:
+        return polygon_diameter(self.poly)
+
+    @property
+    def mec(self) -> Circle:
+        return minimum_enclosing_circle(self.poly)
+
+    @property
+    def ready(self) -> bool:
+        return bool(self.poly) and self.mec.r <= READY_RADIUS
+
+def candidate_bbox(poly: Sequence[Point], radius: float = MIN_RECEIVE_R):
+    if not poly:
+        return None
+    xmin = max(v[0] - radius for v in poly)
+    xmax = min(v[0] + radius for v in poly)
+    ymin = max(v[1] - radius for v in poly)
+    ymax = min(v[1] + radius for v in poly)
+    return None if xmin > xmax or ymin > ymax else (xmin, xmax, ymin, ymax)
+
+def grid_points(bounds, step: float) -> List[Point]:
+    xmin, xmax, ymin, ymax = bounds
+    pts: List[Point] = []
+    nx = max(1, int(math.floor((xmax - xmin) / step)) + 1)
+    ny = max(1, int(math.floor((ymax - ymin) / step)) + 1)
+    for ix in range(nx + 1):
+        x = min(xmax, xmin + ix * step)
+        for iy in range(ny + 1):
+            y = min(ymax, ymin + iy * step)
+            pts.append((x, y))
+    pts.append(((xmin + xmax) / 2.0, (ymin + ymax) / 2.0))
+    return list(dict.fromkeys((round(x, 6), round(y, 6)) for x, y in pts))
+
+def geometric_score(q: Point, state: SourceState) -> float:
+    s1 = state.observations[0].pos
+    worst = 0.0
+    for g in sample_poly(state.poly, 12):
+        d1 = max(dist(s1, g), 1e-6)
+        d2 = max(dist(q, g), 1e-6)
+        sin_g = abs(cross(sub(s1, g), sub(q, g))) / max(d1 * d2, 1e-12)
+        worst = max(worst, d1 * d2 / max(sin_g, 1e-4))
+    return worst
+
+def predicted_worst_diameter(q: Point, state: SourceState) -> float:
+    worst = 0.0
+    for g in sample_poly(state.poly, 14):
+        if dist(q, g) <= NEAR_R:
+            d_here = 0.0
+        else:
+            true_b = bearing_deg(q, g)
+            d_here = 0.0
+            for e in (-BEARING_ERR_DEG, 0.0, BEARING_ERR_DEG):
+                p = clip_wedge(state.poly, q, true_b + e)
+                if p:
+                    d_here = max(d_here, polygon_diameter(p))
+        worst = max(worst, d_here)
+    return worst
+
+def _time_score_measure_candidate(q: Point, predicted_d: float,
+                                  state: SourceState, current_pos: Point) -> float:
+    move_s = dist(current_pos, q) / MOVE_SPEED_MPS
+    center_leg_s = dist(q, state.mec.c) / MOVE_SPEED_MPS
+    residual_s = predicted_d / MOVE_SPEED_MPS
+    center_weight = (EARLY_CENTER_PROGRESS_WEIGHT
+                     if len(state.observations) <= 2 else TIME_TO_CENTER_WEIGHT)
+    return (move_s + MEASURE_ACTION_S
+            + center_weight * center_leg_s
+            + TIME_RESIDUAL_WEIGHT * residual_s)
+
+def _filter_measure_candidates(points: Sequence[Point], state: SourceState) -> List[Point]:
+    raw = [p for p in points if robust_receive(p, state.poly)]
+    good = [p for p in raw
+            if all(dist(p, obs.pos) >= MIN_ACTIVE_BASELINE for obs in state.observations)]
+    return good or [p for p in raw if all(dist(p, obs.pos) >= 1.0 for obs in state.observations)]
+
+def choose_next_measure_point(state: SourceState, current_pos: Point) -> Point:
+    bounds = candidate_bbox(state.poly)
+    if bounds is None:
+        return state.mec.c
+
+    coarse = _filter_measure_candidates(grid_points(bounds, COARSE_STEP), state)
+    if not coarse:
+        return state.mec.c
+
+    scored = sorted((geometric_score(p, state), p) for p in coarse)
+    keep_n = max(10, int(len(scored) * max(GEOM_KEEP_RATIO, 0.45)))
+    keep = [p for _, p in scored[:keep_n]]
+    keep.extend(sorted(coarse, key=lambda p: dist(current_pos, p))[:6])
+    keep.extend(sorted(coarse, key=lambda p: dist(state.mec.c, p))[:6])
+    keep = list(dict.fromkeys(keep))
+    exact = []
+    for p in keep:
+        pd = predicted_worst_diameter(p, state)
+        exact.append((_time_score_measure_candidate(p, pd, state, current_pos), pd, p))
+
+    best_pd = min(x[1] for x in exact)
+    quality_cap = TIME_QUALITY_CAP_EARLY if len(state.observations) <= 2 else TIME_QUALITY_CAP_LATE
+    admissible = [x for x in exact if x[1] <= best_pd * quality_cap + 1e-8]
+    admissible.sort(key=lambda x: (x[0], x[1]))
+    return admissible[0][2]
+
+class Problem3CoreController:
+    def interleaved_search_localize_clear(self) -> None:
+        p0 = (0.0, 0.0)
+        self._scan_unknown_aux(p0, force=True, label="原点")
+        while True:
+            if len(self.sources) >= 16 and self.unknown:
+                self.empty |= self.unknown
+                self.unknown.clear()
+
+            if self.unknown and self.search_scan_points:
+                radius, _ = self.guaranteed_cover_radius(self.search_scan_points)
+                if radius <= MIN_RECEIVE_R + ADAPTIVE_COVER_TOL:
+                    self.empty |= self.unknown
+                    self.unknown.clear()
+            pending = [st for st in self.sources.values() if not st.cleared]
+            if not self.unknown and not pending:
+                break
+            completion = []
+            if self.unknown:
+                completion, _ = self._dynamic_route_aware_completion()
+            route = self._plan_region_route(completion)
+            if route:
+                node_kind, node_id, anchor = route[0]
+                if node_kind == "cover":
+                    self._scan_unknown_aux(anchor, force=True, label="动态后备覆盖点")
+                    self.maybe_probe_known_at_station(anchor)
+                    continue
+
+                if node_kind == "source":
+                    action = self._task_action_for_channel(node_id)
+                    if action is not None:
+                        self._execute_interleaved_action(action)
+                        continue
+            if pending:
+                action = self.next_task_action()
+                if action is not None:
+                    self._execute_interleaved_action(action)
+                    continue
+            break
+
  \end{lstlisting}
 
+\section{问题四求解代码}
 
- \section{代码二}
+\begin{lstlisting}[language=python]
+from __future__ import annotations
+import math
+import random
+from dataclasses import dataclass, field
+from typing import List, Optional, Sequence, Tuple
 
-\begin{lstlisting}[language=c]
-kk=2;
-[mdd,ndd]=size(dd);
-while ~isempty(V)
-    [tmpd,j]=min(W(i,V));tmpj=V(j);
-for k=2:ndd
-    [tmp1,jj]=min(dd(1,k)+W(dd(2,k),V));
-    tmp2=V(jj);tt(k-1,:)=[tmp1,tmp2,jj];
-end
-    tmp=[tmpd,tmpj,j;tt];[tmp3,tmp4]=min(tmp(:,1));
-if tmp3==tmpd, ss(1:2,kk)=[i;tmp(tmp4,2)];
-else,tmp5=find(ss(:,tmp4)~=0);tmp6=length(tmp5);
-if dd(2,tmp4)==ss(tmp6,tmp4)
-    ss(1:tmp6+1,kk)=[ss(tmp5,tmp4);tmp(tmp4,2)];
-else, ss(1:3,kk)=[i;dd(2,tmp4);tmp(tmp4,2)];
-end;
-end
-    dd=[dd,[tmp3;tmp(tmp4,2)]];V(tmp(tmp4,3))=[];
-    [mdd,ndd]=size(dd);
-    kk=kk+1;
-end;
-S=ss;
-D=dd(1,:);
- \end{lstlisting}
+Point = Tuple[float, float]
+ARENA_R = 1800.0
+MIN_RECEIVE_R = 1000.0
+MAX_RECEIVE_R = 1500.0
+BEARING_ERR_DEG = 1.0
+NEAR_R = 5.0
+READY_RADIUS = 19.0
+CIRCLE_SIDES = 180
+P4_INNER_R = 950.0
+P4_OUTER_R = ARENA_R / math.cos(math.radians(15.0))
+P4_RING_N = 12
+P4_PROBE_FORWARD = 180.0
+P4_PROBE_LATERAL = 30.0
+P4_MIN_FORWARD = 40.0
+P4_MIN_LATERAL = 12.0
+P4_MIN_PROBE_SCALE = 1.0 / 64.0
+P4_MAX_SUCCESSFUL_PROBES = 12
+P4_MAX_TOTAL_PROBES_PER_SOURCE = 60
+P4_ROUTE_MULTISTART = 10
+P4_SPARSE_DP_MAX_N = 15
+
+def add(a: Point, b: Point) -> Point:
+    return (a[0] + b[0], a[1] + b[1])
+
+def sub(a: Point, b: Point) -> Point:
+    return (a[0] - b[0], a[1] - b[1])
+
+def mul(a: Point, k: float) -> Point:
+    return (a[0] * k, a[1] * k)
+
+def dot(a: Point, b: Point) -> float:
+    return a[0] * b[0] + a[1] * b[1]
+
+def cross(a: Point, b: Point) -> float:
+    return a[0] * b[1] - a[1] * b[0]
+
+def dist(a: Point, b: Point) -> float:
+    return math.hypot(a[0] - b[0], a[1] - b[1])
+
+def dedup_polygon(poly: Sequence[Point]) -> List[Point]:
+    if not poly:
+        return []
+    out: List[Point] = []
+    for p in poly:
+        if not out or dist(p, out[-1]) > 1e-7:
+            out.append(p)
+    if len(out) >= 2 and dist(out[0], out[-1]) <= 1e-7:
+        out.pop()
+    return out
+
+def clip_halfplane(poly: Sequence[Point], f) -> List[Point]:
+    if not poly:
+        return []
+    out: List[Point] = []
+    prev = poly[-1]
+    fp = f(prev)
+    prev_in = fp >= -1e-10
+    for cur in poly:
+        fc = f(cur)
+        cur_in = fc >= -1e-10
+        if cur_in != prev_in:
+            den = fp - fc
+            if abs(den) > 1e-15:
+                t = fp / den
+                out.append((prev[0] + t * (cur[0] - prev[0]),
+                            prev[1] + t * (cur[1] - prev[1])))
+        if cur_in:
+            out.append(cur)
+        prev, fp, prev_in = cur, fc, cur_in
+    return dedup_polygon(out)
+
+def clip_wedge(poly: Sequence[Point], station: Point,
+               measured_deg: float,
+               alpha_deg: float = BEARING_ERR_DEG) -> List[Point]:
+    lo = math.radians(measured_deg - alpha_deg)
+    hi = math.radians(measured_deg + alpha_deg)
+    ulo = (math.cos(lo), math.sin(lo))
+    uhi = (math.cos(hi), math.sin(hi))
+    p1 = clip_halfplane(poly, lambda p: cross(ulo, sub(p, station)))
+    return clip_halfplane(p1, lambda p: -cross(uhi, sub(p, station)))
+
+def clip_disk_outer(poly: Sequence[Point], center: Point,
+                    radius: float, n: int = CIRCLE_SIDES) -> List[Point]:
+    out = list(poly)
+    for k in range(n):
+        a = 2 * math.pi * k / n
+        normal = (math.cos(a), math.sin(a))
+        out = clip_halfplane(out, lambda p, nrm=normal: radius - dot(nrm, sub(p, center)))
+        if not out:
+            break
+    return out
+
+@dataclass
+class Circle:
+    c: Point
+    r: float
+
+def is_in_circle(c: Circle, p: Point) -> bool:
+    return dist(c.c, p) <= c.r + 1e-7
+
+def circle_two(a: Point, b: Point) -> Circle:
+    c = ((a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0)
+    return Circle(c, dist(a, b) / 2.0)
+
+def circle_three(a: Point, b: Point, c: Point) -> Optional[Circle]:
+    ax, ay = a
+    bx, by = b
+    cx, cy = c
+    d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+    if abs(d) < 1e-12:
+        return None
+    ux = ((ax * ax + ay * ay) * (by - cy) +
+          (bx * bx + by * by) * (cy - ay) +
+          (cx * cx + cy * cy) * (ay - by)) / d
+    uy = ((ax * ax + ay * ay) * (cx - bx) +
+          (bx * bx + by * by) * (ax - cx) +
+          (cx * cx + cy * cy) * (bx - ax)) / d
+    cc = (ux, uy)
+    return Circle(cc, dist(cc, a))
+
+def minimum_enclosing_circle(points: Sequence[Point]) -> Circle:
+    pts = list(points)
+    if not pts:
+        return Circle((0.0, 0.0), 0.0)
+    rnd = random.Random(20260911)
+    rnd.shuffle(pts)
+    c: Optional[Circle] = None
+    for i, p in enumerate(pts):
+        if c is None or not is_in_circle(c, p):
+            c = Circle(p, 0.0)
+            for j in range(i):
+                q = pts[j]
+                if not is_in_circle(c, q):
+                    c = circle_two(p, q)
+                    for k in range(j):
+                        r = pts[k]
+                        if not is_in_circle(c, r):
+                            cc = circle_three(p, q, r)
+                            if cc is not None:
+                                c = cc
+                            else:
+                                opts = [circle_two(p, q), circle_two(p, r), circle_two(q, r)]
+                                opts = [o for o in opts if all(is_in_circle(o, z) for z in (p, q, r))]
+                                c = min(opts, key=lambda o: o.r)
+    assert c is not None
+    return c
+
+@dataclass
+class Observation:
+    pos: Point
+    svd_deg: float
+
+@dataclass
+class SourceState:
+    channel: int
+    poly: List[Point]
+    observations: List[Observation] = field(default_factory=list)
+    cleared: bool = False
+    def add_direction(self, pos: Point, svd_deg: float) -> None:
+        p = clip_wedge(self.poly, pos, svd_deg)
+        a = math.radians(svd_deg)
+        u = (math.cos(a), math.sin(a))
+        min_forward = NEAR_R * math.cos(math.radians(BEARING_ERR_DEG))
+        p = clip_halfplane(p, lambda x: dot(u, sub(x, pos)) - min_forward)
+        p = clip_disk_outer(p, pos, MAX_RECEIVE_R)
+        if not p:
+            raise RuntimeError(f"频道{self.channel}加入观测后可行域为空")
+        self.poly = p
+        self.observations.append(Observation(pos, svd_deg))
+    @property
+    def mec(self) -> Circle:
+        return minimum_enclosing_circle(self.poly)
+    @property
+    def ready(self) -> bool:
+        return bool(self.poly) and self.mec.r <= READY_RADIUS
+
+def p4_guarantee_search_points() -> List[Point]:
+    pts: List[Point] = [(0.0, 0.0)]
+    for k in range(P4_RING_N):
+        a = math.radians(30.0 * k)
+        pts.append((P4_INNER_R * math.cos(a), P4_INNER_R * math.sin(a)))
+    for k in range(P4_RING_N):
+        a = math.radians(15.0 + 30.0 * k)
+        pts.append((P4_OUTER_R * math.cos(a), P4_OUTER_R * math.sin(a)))
+    return pts
+
+def open_route_length(route: Sequence[Point], start: Point = (0.0, 0.0)) -> float:
+    cur = start
+    total = 0.0
+    for p in route:
+        total += dist(cur, p)
+        cur = p
+    return total
+
+def nearest_neighbor_route(points: Sequence[Point], start: Point = (0.0, 0.0)) -> List[Point]:
+    rem = list(points)
+    route: List[Point] = []
+    cur = start
+    while rem:
+        idx = min(range(len(rem)), key=lambda i: dist(cur, rem[i]))
+        cur = rem.pop(idx)
+        route.append(cur)
+    return route
+
+def two_opt_open_route(route: Sequence[Point], start: Point = (0.0, 0.0)) -> List[Point]:
+    r = list(route)
+    improved = True
+    while improved:
+        improved = False
+        n = len(r)
+        for i in range(n - 1):
+            a = start if i == 0 else r[i - 1]
+            b = r[i]
+            for j in range(i + 1, n):
+                c = r[j]
+                dnext = None if j == n - 1 else r[j + 1]
+                old = dist(a, b) + (0.0 if dnext is None else dist(c, dnext))
+                new = dist(a, c) + (0.0 if dnext is None else dist(b, dnext))
+                if new + 1e-9 < old:
+                    r[i:j + 1] = reversed(r[i:j + 1])
+                    improved = True
+                    break
+            if improved:
+                break
+    return r
+
+def p4_search_route() -> List[Point]:
+    pts = p4_guarantee_search_points()
+    center = pts[0]
+    return [center] + two_opt_open_route(nearest_neighbor_route(pts[1:], center), center)
+
+class Problem4CoreController:
+    def guaranteed_directional_search(self) -> None:
+        center = self.search_route[0]
+        self.scan_unknown_at(center, 0)
+        self.opportunistic_known_at_search_station(center)
+        remaining = [(i, p) for i, p in enumerate(self.search_route[1:], start=1)]
+        while remaining:
+            if len(self.sources) >= 16:
+                self.empty |= self.unknown
+                self.unknown.clear()
+                break
+            route = self._plan_mixed_route(remaining)
+            if not route:
+                break
+            kind, ident, q = route[0]
+            if kind == "search":
+                self.scan_unknown_at(q, ident)
+                self.opportunistic_known_at_search_station(q)
+                remaining = [(j, p) for j, p in remaining if j != ident]
+                continue
+            if kind == "clear":
+                self.try_clear_source(ident)
+            else:
+                self.try_local_clear_sweep(ident)
+        if self.unknown:
+            self.empty |= self.unknown
+            self.unknown.clear()
+        self._activate_sparse_mode()
+
+    def _probe_offsets(self, st: SourceState, scale: float) -> Tuple[float, float]:
+        obs = st.observations[-1]
+        a = math.radians(obs.svd_deg)
+        u = (math.cos(a), math.sin(a))
+        est_forward = dot(sub(st.mec.c, obs.pos), u) if st.poly else P4_PROBE_FORWARD
+        f0 = min(P4_PROBE_FORWARD, max(P4_MIN_FORWARD, 0.55 * max(est_forward, 0.0)))
+        b0 = min(P4_PROBE_LATERAL, max(P4_MIN_LATERAL, 0.18 * f0))
+        return f0 * scale, b0 * scale
+
+    def _paired_probe_points(self, st: SourceState, scale: float) -> List[Point]:
+        obs = st.observations[-1]
+        a = math.radians(obs.svd_deg)
+        u = (math.cos(a), math.sin(a))
+        v = (-math.sin(a), math.cos(a))
+        f, b = self._probe_offsets(st, scale)
+        base = add(obs.pos, mul(u, f))
+        return [add(base, mul(v, b)), add(base, mul(v, -b))]
+
+    def _exact_open_route_dp(self, nodes, start: Point):
+        n = len(nodes)
+        if n <= 1:
+            return list(nodes)
+        full = (1 << n) - 1
+        inf = float("inf")
+        dp = [inf] * ((1 << n) * n)
+        parent = [-1] * ((1 << n) * n)
+        start_dist = [dist(start, nodes[j][2]) for j in range(n)]
+        dmat = [[0.0] * n for _ in range(n)]
+        for i in range(n):
+            for j in range(i + 1, n):
+                d = dist(nodes[i][2], nodes[j][2])
+                dmat[i][j] = dmat[j][i] = d
+        for j in range(n):
+            dp[(1 << j) * n + j] = start_dist[j]
+        for mask in range(1, full + 1):
+            for j in range(n):
+                cur = dp[mask * n + j]
+                if cur == inf or not (mask & (1 << j)):
+                    continue
+                for k in range(n):
+                    if mask & (1 << k):
+                        continue
+                    nmask = mask | (1 << k)
+                    idx = nmask * n + k
+                    nd = cur + dmat[j][k]
+                    if nd < dp[idx]:
+                        dp[idx] = nd
+                        parent[idx] = j
+        end = min(range(n), key=lambda j: dp[full * n + j])
+        order_rev = []
+        mask = full
+        while end >= 0:
+            order_rev.append(end)
+            prev = parent[mask * n + end]
+            mask ^= 1 << end
+            end = prev
+        order_rev.reverse()
+        return [nodes[i] for i in order_rev]
+    def localize_one_source(self, channel: int) -> None:
+        st = self.sources[channel]
+        if st.cleared:
+            return
+        if st.poly and st.ready and self.try_clear_source(channel):
+            return
+        if st.poly and self.try_local_clear_sweep(channel):
+            return
+        if st.poly and self._maybe_trial_clear(channel):
+            return
+        successful = max(0, len(st.observations) - 1)
+        total_probes = 0
+        while not st.cleared:
+            if total_probes >= P4_MAX_TOTAL_PROBES_PER_SOURCE:
+                raise RuntimeError("定向追踪探测次数过多")
+
+            if st.poly and st.ready and self.try_clear_source(channel):
+                return
+            if st.poly and self.try_local_clear_sweep(channel):
+                return
+            if st.poly and self._maybe_trial_clear(channel):
+                return
+            scale = 1.0
+            got_signal = False
+            while scale >= P4_MIN_PROBE_SCALE - 1e-12:
+                qlist = self._paired_probe_points(st, scale)
+                qlist.sort(key=lambda q: dist(self.client.current_pos, q))
+                for q in qlist:
+                    self._ensure_real_time()
+                    total_probes += 1
+                    resp = self.client.measure(q, channel)
+                    result = resp.get("measure_result")
+                    if result == "no_signal":
+                        continue
+                    self._handle_measure(channel, q, resp)
+                    got_signal = True
+                    if result == "near" or self.sources[channel].cleared:
+                        return
+                    successful += 1
+                    st = self.sources[channel]
+                    if st.poly and st.ready and self.try_clear_source(channel):
+                        return
+                    break
+                if got_signal:
+                    break
+                # 左右均无信号：缩小探测尺度
+                scale *= 0.5
+            if not got_signal:
+                # 极小尺度仍失败时回到最近一次成功测向点恢复
+                obs = st.observations[-1]
+                resp = self.client.measure(obs.pos, channel)
+                if resp.get("measure_result") == "no_signal":
+                    raise RuntimeError("此前成功测向点重新测量却无信号")
+                self._handle_measure(channel, obs.pos, resp)
+                
+    def localize_and_clear_all(self) -> None:
+        while True:
+            c = self._choose_next_localize_channel()
+            if c is None:
+                break
+            self.localize_one_source(c)
+
+\end{lstlisting}
+
 \end{appendices}
-
 \end{document} 
